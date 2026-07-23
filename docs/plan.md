@@ -56,8 +56,10 @@ docs/
 
 ## Hosting (all free tier)
 
-- Frontend → Vercel
-- API → Azure App Service (F1 / free), native ASP.NET Core, no cold start
-  on the web tier
+- Frontend → Vercel — **live: https://home-os-wine.vercel.app**
+- API → Render (Docker) — **live: https://home-os-mkrb.onrender.com**
+  (switched from the originally planned Azure App Service to avoid the
+  card-verification step; trade-off is a ~30–50s cold start after 15 min
+  idle on the free tier)
 - Database → Neon (serverless Postgres)
-- Email → Brevo (300/day free)
+- Email → Brevo (300/day free) — not wired up yet, ships in Phase 3
