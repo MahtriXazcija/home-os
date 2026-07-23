@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using HomeOS.Application.Common;
 using HomeOS.Application.Households;
 using HomeOS.Application.Households.Commands;
@@ -21,7 +22,8 @@ if (!string.IsNullOrEmpty(port))
 
 const string CorsPolicy = "HomeOsCors";
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
