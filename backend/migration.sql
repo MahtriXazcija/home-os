@@ -446,5 +446,204 @@ BEGIN
     VALUES ('20260723124340_AddRemindersNotifications', '9.0.9');
     END IF;
 END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723133847_AddNotesFinanceLifeAdmin') THEN
+    CREATE TABLE "Bills" (
+        "Id" uuid NOT NULL,
+        "HouseholdId" uuid NOT NULL,
+        "Title" character varying(200) NOT NULL,
+        "Amount" numeric(12,2) NOT NULL,
+        "Category" character varying(100) NOT NULL,
+        "DueDateUtc" timestamp with time zone NOT NULL,
+        "Recurrence" integer NOT NULL,
+        "IsPaid" boolean NOT NULL,
+        "PaidByUserId" uuid,
+        "PaidAtUtc" timestamp with time zone,
+        "CreatedByUserId" uuid NOT NULL,
+        "CreatedAtUtc" timestamp with time zone NOT NULL,
+        CONSTRAINT "PK_Bills" PRIMARY KEY ("Id")
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723133847_AddNotesFinanceLifeAdmin') THEN
+    CREATE TABLE "Budgets" (
+        "Id" uuid NOT NULL,
+        "HouseholdId" uuid NOT NULL,
+        "Category" character varying(100) NOT NULL,
+        "MonthlyLimit" numeric(12,2) NOT NULL,
+        CONSTRAINT "PK_Budgets" PRIMARY KEY ("Id")
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723133847_AddNotesFinanceLifeAdmin') THEN
+    CREATE TABLE "Contacts" (
+        "Id" uuid NOT NULL,
+        "HouseholdId" uuid NOT NULL,
+        "Name" character varying(200) NOT NULL,
+        "Phone" text,
+        "Email" text,
+        "Notes" text,
+        "CreatedByUserId" uuid NOT NULL,
+        "CreatedAtUtc" timestamp with time zone NOT NULL,
+        CONSTRAINT "PK_Contacts" PRIMARY KEY ("Id")
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723133847_AddNotesFinanceLifeAdmin') THEN
+    CREATE TABLE "Documents" (
+        "Id" uuid NOT NULL,
+        "HouseholdId" uuid NOT NULL,
+        "Title" character varying(200) NOT NULL,
+        "Category" character varying(100) NOT NULL,
+        "RenewalDateUtc" timestamp with time zone,
+        "Notes" text,
+        "CreatedByUserId" uuid NOT NULL,
+        "CreatedAtUtc" timestamp with time zone NOT NULL,
+        CONSTRAINT "PK_Documents" PRIMARY KEY ("Id")
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723133847_AddNotesFinanceLifeAdmin') THEN
+    CREATE TABLE "Notes" (
+        "Id" uuid NOT NULL,
+        "HouseholdId" uuid NOT NULL,
+        "Title" character varying(200),
+        "Content" text NOT NULL,
+        "Tags" text[] NOT NULL,
+        "JournalDate" date,
+        "LinkedType" text,
+        "LinkedId" uuid,
+        "CreatedByUserId" uuid NOT NULL,
+        "CreatedAtUtc" timestamp with time zone NOT NULL,
+        "UpdatedAtUtc" timestamp with time zone NOT NULL,
+        CONSTRAINT "PK_Notes" PRIMARY KEY ("Id")
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723133847_AddNotesFinanceLifeAdmin') THEN
+    CREATE TABLE "ShoppingItems" (
+        "Id" uuid NOT NULL,
+        "HouseholdId" uuid NOT NULL,
+        "Text" character varying(300) NOT NULL,
+        "IsChecked" boolean NOT NULL,
+        "CreatedByUserId" uuid NOT NULL,
+        "CreatedAtUtc" timestamp with time zone NOT NULL,
+        CONSTRAINT "PK_ShoppingItems" PRIMARY KEY ("Id")
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723133847_AddNotesFinanceLifeAdmin') THEN
+    CREATE TABLE "Transactions" (
+        "Id" uuid NOT NULL,
+        "HouseholdId" uuid NOT NULL,
+        "Type" integer NOT NULL,
+        "Category" character varying(100) NOT NULL,
+        "Amount" numeric(12,2) NOT NULL,
+        "OccurredAtUtc" timestamp with time zone NOT NULL,
+        "Description" text,
+        "CreatedByUserId" uuid NOT NULL,
+        "CreatedAtUtc" timestamp with time zone NOT NULL,
+        CONSTRAINT "PK_Transactions" PRIMARY KEY ("Id")
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723133847_AddNotesFinanceLifeAdmin') THEN
+    CREATE INDEX "IX_Bills_DueDateUtc" ON "Bills" ("DueDateUtc");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723133847_AddNotesFinanceLifeAdmin') THEN
+    CREATE INDEX "IX_Bills_HouseholdId" ON "Bills" ("HouseholdId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723133847_AddNotesFinanceLifeAdmin') THEN
+    CREATE UNIQUE INDEX "IX_Budgets_HouseholdId_Category" ON "Budgets" ("HouseholdId", "Category");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723133847_AddNotesFinanceLifeAdmin') THEN
+    CREATE INDEX "IX_Contacts_HouseholdId" ON "Contacts" ("HouseholdId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723133847_AddNotesFinanceLifeAdmin') THEN
+    CREATE INDEX "IX_Documents_HouseholdId" ON "Documents" ("HouseholdId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723133847_AddNotesFinanceLifeAdmin') THEN
+    CREATE INDEX "IX_Notes_HouseholdId" ON "Notes" ("HouseholdId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723133847_AddNotesFinanceLifeAdmin') THEN
+    CREATE INDEX "IX_Notes_JournalDate" ON "Notes" ("JournalDate");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723133847_AddNotesFinanceLifeAdmin') THEN
+    CREATE INDEX "IX_ShoppingItems_HouseholdId" ON "ShoppingItems" ("HouseholdId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723133847_AddNotesFinanceLifeAdmin') THEN
+    CREATE INDEX "IX_Transactions_HouseholdId" ON "Transactions" ("HouseholdId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723133847_AddNotesFinanceLifeAdmin') THEN
+    CREATE INDEX "IX_Transactions_OccurredAtUtc" ON "Transactions" ("OccurredAtUtc");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723133847_AddNotesFinanceLifeAdmin') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260723133847_AddNotesFinanceLifeAdmin', '9.0.9');
+    END IF;
+END $EF$;
 COMMIT;
 

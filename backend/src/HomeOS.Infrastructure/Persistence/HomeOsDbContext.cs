@@ -2,7 +2,10 @@ using HomeOS.Application.Common;
 using HomeOS.Domain.Boards;
 using HomeOS.Domain.Calendar;
 using HomeOS.Domain.Common;
+using HomeOS.Domain.Finance;
 using HomeOS.Domain.Households;
+using HomeOS.Domain.LifeAdmin;
+using HomeOS.Domain.Notes;
 using HomeOS.Domain.Notifications;
 using HomeOS.Domain.Reminders;
 using HomeOS.Domain.Tasks;
@@ -24,6 +27,13 @@ public class HomeOsDbContext(DbContextOptions<HomeOsDbContext> options, IPublish
     public DbSet<Reminder> Reminders => Set<Reminder>();
     public DbSet<Notification> Notifications => Set<Notification>();
     public DbSet<NotificationPreference> NotificationPreferences => Set<NotificationPreference>();
+    public DbSet<Note> Notes => Set<Note>();
+    public DbSet<Transaction> Transactions => Set<Transaction>();
+    public DbSet<Bill> Bills => Set<Bill>();
+    public DbSet<Budget> Budgets => Set<Budget>();
+    public DbSet<HouseholdDocument> Documents => Set<HouseholdDocument>();
+    public DbSet<Contact> Contacts => Set<Contact>();
+    public DbSet<ShoppingItem> ShoppingItems => Set<ShoppingItem>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -104,6 +114,63 @@ public class HomeOsDbContext(DbContextOptions<HomeOsDbContext> options, IPublish
         {
             entity.ToTable("NotificationPreferences");
             entity.HasIndex(p => new { p.UserId, p.Category }).IsUnique();
+        });
+
+        builder.Entity<Note>(entity =>
+        {
+            entity.ToTable("Notes");
+            entity.Property(n => n.Title).HasMaxLength(200);
+            entity.HasIndex(n => n.HouseholdId);
+            entity.HasIndex(n => n.JournalDate);
+        });
+
+        builder.Entity<Transaction>(entity =>
+        {
+            entity.ToTable("Transactions");
+            entity.Property(t => t.Category).HasMaxLength(100).IsRequired();
+            entity.Property(t => t.Amount).HasPrecision(12, 2);
+            entity.HasIndex(t => t.HouseholdId);
+            entity.HasIndex(t => t.OccurredAtUtc);
+        });
+
+        builder.Entity<Bill>(entity =>
+        {
+            entity.ToTable("Bills");
+            entity.Property(b => b.Title).HasMaxLength(200).IsRequired();
+            entity.Property(b => b.Category).HasMaxLength(100);
+            entity.Property(b => b.Amount).HasPrecision(12, 2);
+            entity.HasIndex(b => b.HouseholdId);
+            entity.HasIndex(b => b.DueDateUtc);
+        });
+
+        builder.Entity<Budget>(entity =>
+        {
+            entity.ToTable("Budgets");
+            entity.Property(b => b.Category).HasMaxLength(100).IsRequired();
+            entity.Property(b => b.MonthlyLimit).HasPrecision(12, 2);
+            entity.HasIndex(b => new { b.HouseholdId, b.Category }).IsUnique();
+        });
+
+        builder.Entity<HouseholdDocument>(entity =>
+        {
+            entity.ToTable("Documents");
+            entity.Property(d => d.Title).HasMaxLength(200).IsRequired();
+            entity.Property(d => d.Category).HasMaxLength(100);
+            entity.HasIndex(d => d.HouseholdId);
+        });
+
+        builder.Entity<Contact>(entity =>
+        {
+            entity.ToTable("Contacts");
+            entity.Property(c => c.Name).HasMaxLength(200).IsRequired();
+            entity.HasIndex(c => c.HouseholdId);
+        });
+
+        builder.Entity<ShoppingItem>(entity =>
+        {
+            entity.ToTable("ShoppingItems");
+            entity.Property(s => s.Text).HasMaxLength(300).IsRequired();
+            entity.HasIndex(s => s.HouseholdId);
         });
     }
 

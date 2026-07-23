@@ -1,5 +1,8 @@
 using HomeOS.Domain.Boards;
 using HomeOS.Domain.Calendar;
+using HomeOS.Domain.Finance;
+using HomeOS.Domain.LifeAdmin;
+using HomeOS.Domain.Notes;
 using HomeOS.Domain.Notifications;
 using HomeOS.Domain.Reminders;
 using HomeOS.Domain.Tasks;
@@ -21,6 +24,13 @@ public interface IAppDbContext
     DbSet<Reminder> Reminders { get; }
     DbSet<Notification> Notifications { get; }
     DbSet<NotificationPreference> NotificationPreferences { get; }
+    DbSet<Note> Notes { get; }
+    DbSet<Transaction> Transactions { get; }
+    DbSet<Bill> Bills { get; }
+    DbSet<Budget> Budgets { get; }
+    DbSet<HouseholdDocument> Documents { get; }
+    DbSet<Contact> Contacts { get; }
+    DbSet<ShoppingItem> ShoppingItems { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }
