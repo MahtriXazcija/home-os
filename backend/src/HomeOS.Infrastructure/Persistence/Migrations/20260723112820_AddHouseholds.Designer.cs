@@ -3,6 +3,7 @@ using System;
 using HomeOS.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HomeOS.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(HomeOsDbContext))]
-    partial class HomeOsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260723112820_AddHouseholds")]
+    partial class AddHouseholds
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

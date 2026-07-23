@@ -1,7 +1,12 @@
+using System.Text;
+using HomeOS.Application.Households;
+using HomeOS.Application.Households.Commands;
 using HomeOS.Infrastructure.Identity;
 using HomeOS.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +23,8 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateHouseholdCommand>());
 
 // Comma-separated list in config/env var "Cors:AllowedOrigins", falling back to
 // the local Vite dev server. Add the production frontend URL there once deployed
@@ -45,6 +52,37 @@ if (!string.IsNullOrWhiteSpace(connectionString))
         .AddIdentityCore<AppUser>(options => options.SignIn.RequireConfirmedAccount = false)
         .AddRoles<IdentityRole<Guid>>()
         .AddEntityFrameworkStores<HomeOsDbContext>();
+
+    builder.Services.AddScoped<IHouseholdRepository, HouseholdRepository>();
+
+    builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName));
+    builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();
+
+    var jwtSecret = builder.Configuration[$"{JwtOptions.SectionName}:Secret"];
+    if (!string.IsNullOrWhiteSpace(jwtSecret))
+    {
+        var jwtOptions = builder.Configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>()!;
+        builder.Services
+            .AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtOptions.Issuer,
+                    ValidAudience = jwtOptions.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Secret))
+                };
+            });
+        builder.Services.AddAuthorization();
+    }
 }
 
 var app = builder.Build();
@@ -61,6 +99,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors(CorsPolicy);
+
+if (!string.IsNullOrWhiteSpace(connectionString) && !string.IsNullOrWhiteSpace(builder.Configuration[$"{JwtOptions.SectionName}:Secret"]))
+{
+    app.UseAuthentication();
+}
 
 app.UseAuthorization();
 

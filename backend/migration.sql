@@ -169,5 +169,88 @@ BEGIN
     VALUES ('20260723101251_InitialCreate', '9.0.9');
     END IF;
 END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723112820_AddHouseholds') THEN
+    CREATE TABLE "Households" (
+        "Id" uuid NOT NULL,
+        "Name" character varying(200) NOT NULL,
+        "CreatedByUserId" uuid NOT NULL,
+        "CreatedAtUtc" timestamp with time zone NOT NULL,
+        CONSTRAINT "PK_Households" PRIMARY KEY ("Id")
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723112820_AddHouseholds') THEN
+    CREATE TABLE "HouseholdInvitations" (
+        "Id" uuid NOT NULL,
+        "HouseholdId" uuid NOT NULL,
+        "Email" character varying(320) NOT NULL,
+        "Token" text NOT NULL,
+        "InvitedByUserId" uuid NOT NULL,
+        "Status" integer NOT NULL,
+        "CreatedAtUtc" timestamp with time zone NOT NULL,
+        "ExpiresAtUtc" timestamp with time zone NOT NULL,
+        CONSTRAINT "PK_HouseholdInvitations" PRIMARY KEY ("Id"),
+        CONSTRAINT "FK_HouseholdInvitations_Households_HouseholdId" FOREIGN KEY ("HouseholdId") REFERENCES "Households" ("Id") ON DELETE CASCADE
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723112820_AddHouseholds') THEN
+    CREATE TABLE "HouseholdMembers" (
+        "Id" uuid NOT NULL,
+        "HouseholdId" uuid NOT NULL,
+        "UserId" uuid NOT NULL,
+        "DisplayName" character varying(200) NOT NULL,
+        "Role" integer NOT NULL,
+        "JoinedAtUtc" timestamp with time zone NOT NULL,
+        CONSTRAINT "PK_HouseholdMembers" PRIMARY KEY ("Id"),
+        CONSTRAINT "FK_HouseholdMembers_Households_HouseholdId" FOREIGN KEY ("HouseholdId") REFERENCES "Households" ("Id") ON DELETE CASCADE
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723112820_AddHouseholds') THEN
+    CREATE INDEX "IX_HouseholdInvitations_HouseholdId" ON "HouseholdInvitations" ("HouseholdId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723112820_AddHouseholds') THEN
+    CREATE UNIQUE INDEX "IX_HouseholdInvitations_Token" ON "HouseholdInvitations" ("Token");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723112820_AddHouseholds') THEN
+    CREATE INDEX "IX_HouseholdMembers_HouseholdId" ON "HouseholdMembers" ("HouseholdId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723112820_AddHouseholds') THEN
+    CREATE UNIQUE INDEX "IX_HouseholdMembers_UserId" ON "HouseholdMembers" ("UserId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723112820_AddHouseholds') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260723112820_AddHouseholds', '9.0.9');
+    END IF;
+END $EF$;
 COMMIT;
 
