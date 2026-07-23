@@ -21,5 +21,7 @@ public class HouseholdRepository(HomeOsDbContext db) : IHouseholdRepository
 
     public void Add(Household household) => db.Households.Add(household);
 
+    public void TrackNew(object entity) => db.Add(entity);
+
     public Task SaveChangesAsync(CancellationToken cancellationToken) => db.SaveChangesAsync(cancellationToken);
 }

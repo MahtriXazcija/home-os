@@ -17,7 +17,8 @@ public class AcceptInvitationCommandHandler(IHouseholdRepository repository) : I
             throw new InvalidOperationException("You already belong to a household.");
         }
 
-        household.AcceptInvitation(request.Token, request.UserId, request.DisplayName);
+        var member = household.AcceptInvitation(request.Token, request.UserId, request.DisplayName);
+        repository.TrackNew(member);
         await repository.SaveChangesAsync(cancellationToken);
 
         return HouseholdDto.From(household);

@@ -12,6 +12,7 @@ public class InviteMemberCommandHandler(IHouseholdRepository repository) : IRequ
             ?? throw new InvalidOperationException("Household not found.");
 
         var invitation = household.InviteMember(request.Email, request.InvitedByUserId);
+        repository.TrackNew(invitation);
         await repository.SaveChangesAsync(cancellationToken);
 
         return InvitationDto.From(invitation);
