@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>485a2582-d853-428a-894c-23094c96ad61</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.6" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HomeOS.Application\HomeOS.Application.csproj" />
+    <ProjectReference Include="..\HomeOS.Infrastructure\HomeOS.Infrastructure.csproj" />
+    <ProjectReference Include="..\HomeOS.Domain\HomeOS.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
