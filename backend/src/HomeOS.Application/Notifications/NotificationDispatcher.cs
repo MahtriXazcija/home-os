@@ -2,6 +2,7 @@ using System.Net;
 using HomeOS.Application.Common;
 using HomeOS.Domain.Notifications;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace HomeOS.Application.Notifications;
 
@@ -17,7 +18,7 @@ public interface INotificationDispatcher
     Task DispatchAsync(Guid userId, Guid householdId, NotificationCategory category, string title, string? message, CancellationToken cancellationToken);
 }
 
-public class NotificationDispatcher(IAppDbContext db, IUserDirectory userDirectory, IEmailSender emailSender) : INotificationDispatcher
+public class NotificationDispatcher(IAppDbContext db, IUserDirectory userDirectory, IEmailSender emailSender, ILogger<NotificationDispatcher> logger) : INotificationDispatcher
 {
     public async Task DispatchAsync(Guid userId, Guid householdId, NotificationCategory category, string title, string? message, CancellationToken cancellationToken)
     {
@@ -34,6 +35,10 @@ public class NotificationDispatcher(IAppDbContext db, IUserDirectory userDirecto
         if (contact is null) return;
 
         var html = $"<p>{WebUtility.HtmlEncode(title)}</p>" + (message is null ? "" : $"<p>{WebUtility.HtmlEncode(message)}</p>");
-        await emailSender.SendAsync(contact.Email, contact.DisplayName, title, html, cancellationToken);
+        var result = await emailSender.SendAsync(contact.Email, contact.DisplayName, title, html, cancellationToken);
+        if (!result.Success)
+        {
+            logger.LogError("Notification email to {Email} failed: {Error}", contact.Email, result.Error);
+        }
     }
 }

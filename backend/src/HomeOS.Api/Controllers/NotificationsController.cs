@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using HomeOS.Application.Common;
 using HomeOS.Application.Notifications;
 using HomeOS.Application.Notifications.Commands;
 using HomeOS.Application.Notifications.Queries;
@@ -14,7 +15,7 @@ public record SetPreferenceRequest(NotificationCategory Category, bool EmailEnab
 [ApiController]
 [Route("api/notifications")]
 [Authorize]
-public class NotificationsController(ISender sender) : ControllerBase
+public class NotificationsController(ISender sender, IEmailSender emailSender, IUserDirectory userDirectory) : ControllerBase
 {
     private Guid CurrentUserId =>
         Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub")!);
@@ -45,5 +46,16 @@ public class NotificationsController(ISender sender) : ControllerBase
     {
         await sender.Send(new SetNotificationPreferenceCommand(CurrentUserId, request.Category, request.EmailEnabled), ct);
         return NoContent();
+    }
+
+    /// <summary>Temporary diagnostic: sends a real email to the caller and reports exactly what Brevo said, since app logs aren't reachable from outside Render.</summary>
+    [HttpPost("test-email")]
+    public async Task<IActionResult> TestEmail(CancellationToken ct)
+    {
+        var contact = await userDirectory.GetContactAsync(CurrentUserId, ct);
+        if (contact is null) return NotFound("Current user not found.");
+
+        var result = await emailSender.SendAsync(contact.Email, contact.DisplayName, "Home OS test email", "<p>If you can read this, Brevo is wired up correctly.</p>", ct);
+        return Ok(new { toEmail = contact.Email, result.Success, result.Error });
     }
 }

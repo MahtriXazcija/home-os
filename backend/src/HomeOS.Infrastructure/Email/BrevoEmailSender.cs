@@ -11,12 +11,13 @@ public class BrevoEmailSender(HttpClient httpClient, IOptions<EmailOptions> opti
 {
     private readonly EmailOptions _options = options.Value;
 
-    public async Task SendAsync(string toEmail, string toName, string subject, string htmlBody, CancellationToken cancellationToken)
+    public async Task<EmailSendResult> SendAsync(string toEmail, string toName, string subject, string htmlBody, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(_options.BrevoApiKey) || string.IsNullOrWhiteSpace(_options.FromAddress))
         {
-            logger.LogWarning("Email not configured — skipping send to {ToEmail}: {Subject}", toEmail, subject);
-            return;
+            var msg = "Email not configured (missing BrevoApiKey or FromAddress)";
+            logger.LogWarning("{Message} — skipping send to {ToEmail}: {Subject}", msg, toEmail, subject);
+            return new EmailSendResult(false, msg);
         }
 
         var payload = new
@@ -37,6 +38,9 @@ public class BrevoEmailSender(HttpClient httpClient, IOptions<EmailOptions> opti
         {
             var body = await response.Content.ReadAsStringAsync(cancellationToken);
             logger.LogError("Brevo send failed ({Status}) to {ToEmail}: {Body}", response.StatusCode, toEmail, body);
+            return new EmailSendResult(false, $"{(int)response.StatusCode} {response.StatusCode}: {body}");
         }
+
+        return new EmailSendResult(true, null);
     }
 }

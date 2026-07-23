@@ -1,6 +1,8 @@
 namespace HomeOS.Application.Common;
 
+public record EmailSendResult(bool Success, string? Error);
+
 public interface IEmailSender
 {
-    Task SendAsync(string toEmail, string toName, string subject, string htmlBody, CancellationToken cancellationToken);
+    Task<EmailSendResult> SendAsync(string toEmail, string toName, string subject, string htmlBody, CancellationToken cancellationToken);
 }
