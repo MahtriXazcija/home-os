@@ -5,6 +5,7 @@ import { useHousehold } from "../hooks/useHousehold";
 import { getTasks } from "../api/tasks";
 import { getCalendar } from "../api/calendar";
 import { getMyReminders } from "../api/reminders";
+import { getBills } from "../api/finance";
 
 function startOfDay(d: Date) {
   return new Date(d.getFullYear(), d.getMonth(), d.getDate());
@@ -49,6 +50,11 @@ export default function Dashboard() {
     .sort((a, b) => new Date(a.remindAtUtc).getTime() - new Date(b.remindAtUtc).getTime())
     .slice(0, 5);
 
+  const { data: bills } = useQuery({ queryKey: ["bills", householdId], queryFn: () => getBills(householdId), enabled: !!householdId });
+  const upcomingBills = [...(bills ?? [])]
+    .sort((a, b) => new Date(a.dueDateUtc).getTime() - new Date(b.dueDateUtc).getTime())
+    .slice(0, 5);
+
   return (
     <div>
       <h1>Today</h1>
@@ -90,7 +96,15 @@ export default function Dashboard() {
 
         <section className="card">
           <h2>Upcoming bills</h2>
-          <p className="empty">No bills yet — this ships in Phase 4.</p>
+          {upcomingBills.length === 0 && <p className="empty">Nothing due.</p>}
+          {upcomingBills.length > 0 && (
+            <ul className="dashboard-list">
+              {upcomingBills.map((b) => (
+                <li key={b.id} className="dashboard-list-item">{b.title} — {b.amount.toLocaleString(undefined, { style: "currency", currency: "USD" })}</li>
+              ))}
+            </ul>
+          )}
+          <Link className="card-link" to="/finance">Open finance →</Link>
         </section>
         <section className="card">
           <h2>Active reminders</h2>

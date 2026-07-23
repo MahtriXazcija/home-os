@@ -3,7 +3,6 @@ import Layout from "./components/Layout";
 import RequireAuth from "./components/RequireAuth";
 import RequireHousehold from "./components/RequireHousehold";
 import Dashboard from "./pages/Dashboard";
-import Placeholder from "./pages/Placeholder";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Onboarding from "./pages/Onboarding";
@@ -11,6 +10,9 @@ import Tasks from "./pages/Tasks";
 import Kanban from "./pages/Kanban";
 import CalendarPage from "./pages/Calendar";
 import Reminders from "./pages/Reminders";
+import Notes from "./pages/Notes";
+import Finance from "./pages/Finance";
+import LifeAdmin from "./pages/LifeAdmin";
 
 export default function App() {
   return (
@@ -28,9 +30,9 @@ export default function App() {
             <Route path="kanban" element={<Kanban />} />
             <Route path="calendar" element={<CalendarPage />} />
             <Route path="reminders" element={<Reminders />} />
-            <Route path="notes" element={<Placeholder title="Notes" phase="Phase 4" />} />
-            <Route path="finance" element={<Placeholder title="Finance" phase="Phase 4" />} />
-            <Route path="life-admin" element={<Placeholder title="Life Admin" phase="Phase 4" />} />
+            <Route path="notes" element={<Notes />} />
+            <Route path="finance" element={<Finance />} />
+            <Route path="life-admin" element={<LifeAdmin />} />
           </Route>
         </Route>
       </Route>
