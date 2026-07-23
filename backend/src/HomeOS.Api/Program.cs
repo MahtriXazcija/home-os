@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using HomeOS.Application.Common;
 using HomeOS.Application.Households;
 using HomeOS.Application.Households.Commands;
 using HomeOS.Infrastructure.Identity;
@@ -55,6 +56,7 @@ if (!string.IsNullOrWhiteSpace(connectionString))
         .AddEntityFrameworkStores<HomeOsDbContext>();
 
     builder.Services.AddScoped<IHouseholdRepository, HouseholdRepository>();
+    builder.Services.AddScoped<IAppDbContext>(sp => sp.GetRequiredService<HomeOsDbContext>());
 
     builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName));
     builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();

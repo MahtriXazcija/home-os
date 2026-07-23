@@ -252,5 +252,111 @@ BEGIN
     VALUES ('20260723112820_AddHouseholds', '9.0.9');
     END IF;
 END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723121657_AddTasksBoardsCalendar') THEN
+    CREATE TABLE "Boards" (
+        "Id" uuid NOT NULL,
+        "HouseholdId" uuid NOT NULL,
+        "Name" character varying(200) NOT NULL,
+        "CreatedAtUtc" timestamp with time zone NOT NULL,
+        CONSTRAINT "PK_Boards" PRIMARY KEY ("Id")
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723121657_AddTasksBoardsCalendar') THEN
+    CREATE TABLE "CalendarEvents" (
+        "Id" uuid NOT NULL,
+        "HouseholdId" uuid NOT NULL,
+        "Title" character varying(200) NOT NULL,
+        "Description" text,
+        "StartUtc" timestamp with time zone NOT NULL,
+        "EndUtc" timestamp with time zone NOT NULL,
+        "IsAllDay" boolean NOT NULL,
+        "CreatedByUserId" uuid NOT NULL,
+        "CreatedAtUtc" timestamp with time zone NOT NULL,
+        CONSTRAINT "PK_CalendarEvents" PRIMARY KEY ("Id")
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723121657_AddTasksBoardsCalendar') THEN
+    CREATE TABLE "Tasks" (
+        "Id" uuid NOT NULL,
+        "HouseholdId" uuid NOT NULL,
+        "BoardId" uuid,
+        "ParentTaskId" uuid,
+        "Title" character varying(200) NOT NULL,
+        "Description" text,
+        "DueDateUtc" timestamp with time zone,
+        "Priority" integer NOT NULL,
+        "Status" integer NOT NULL,
+        "AssignedToUserId" uuid,
+        "Recurrence" integer NOT NULL,
+        "Tags" text[] NOT NULL,
+        "IsCompleted" boolean NOT NULL,
+        "CompletedAtUtc" timestamp with time zone,
+        "CreatedByUserId" uuid NOT NULL,
+        "CreatedAtUtc" timestamp with time zone NOT NULL,
+        CONSTRAINT "PK_Tasks" PRIMARY KEY ("Id")
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723121657_AddTasksBoardsCalendar') THEN
+    CREATE INDEX "IX_Boards_HouseholdId" ON "Boards" ("HouseholdId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723121657_AddTasksBoardsCalendar') THEN
+    CREATE INDEX "IX_CalendarEvents_HouseholdId" ON "CalendarEvents" ("HouseholdId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723121657_AddTasksBoardsCalendar') THEN
+    CREATE INDEX "IX_CalendarEvents_StartUtc" ON "CalendarEvents" ("StartUtc");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723121657_AddTasksBoardsCalendar') THEN
+    CREATE INDEX "IX_Tasks_BoardId" ON "Tasks" ("BoardId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723121657_AddTasksBoardsCalendar') THEN
+    CREATE INDEX "IX_Tasks_DueDateUtc" ON "Tasks" ("DueDateUtc");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723121657_AddTasksBoardsCalendar') THEN
+    CREATE INDEX "IX_Tasks_HouseholdId" ON "Tasks" ("HouseholdId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723121657_AddTasksBoardsCalendar') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260723121657_AddTasksBoardsCalendar', '9.0.9');
+    END IF;
+END $EF$;
 COMMIT;
 

@@ -1,6 +1,9 @@
 using HomeOS.Application.Common;
+using HomeOS.Domain.Boards;
+using HomeOS.Domain.Calendar;
 using HomeOS.Domain.Common;
 using HomeOS.Domain.Households;
+using HomeOS.Domain.Tasks;
 using HomeOS.Infrastructure.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -10,9 +13,12 @@ using Microsoft.EntityFrameworkCore;
 namespace HomeOS.Infrastructure.Persistence;
 
 public class HomeOsDbContext(DbContextOptions<HomeOsDbContext> options, IPublisher publisher)
-    : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>(options)
+    : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>(options), IAppDbContext
 {
     public DbSet<Household> Households => Set<Household>();
+    public DbSet<TaskItem> Tasks => Set<TaskItem>();
+    public DbSet<Board> Boards => Set<Board>();
+    public DbSet<CalendarEvent> CalendarEvents => Set<CalendarEvent>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -48,6 +54,30 @@ public class HomeOsDbContext(DbContextOptions<HomeOsDbContext> options, IPublish
             entity.ToTable("HouseholdInvitations");
             entity.Property(i => i.Email).HasMaxLength(320);
             entity.HasIndex(i => i.Token).IsUnique();
+        });
+
+        builder.Entity<TaskItem>(entity =>
+        {
+            entity.ToTable("Tasks");
+            entity.Property(t => t.Title).HasMaxLength(200).IsRequired();
+            entity.HasIndex(t => t.HouseholdId);
+            entity.HasIndex(t => t.BoardId);
+            entity.HasIndex(t => t.DueDateUtc);
+        });
+
+        builder.Entity<Board>(entity =>
+        {
+            entity.ToTable("Boards");
+            entity.Property(b => b.Name).HasMaxLength(200).IsRequired();
+            entity.HasIndex(b => b.HouseholdId);
+        });
+
+        builder.Entity<CalendarEvent>(entity =>
+        {
+            entity.ToTable("CalendarEvents");
+            entity.Property(e => e.Title).HasMaxLength(200).IsRequired();
+            entity.HasIndex(e => e.HouseholdId);
+            entity.HasIndex(e => e.StartUtc);
         });
     }
 
