@@ -4,6 +4,7 @@ import { apiGet, type ApiStatus } from "../api/client";
 import { useHousehold } from "../hooks/useHousehold";
 import { getTasks } from "../api/tasks";
 import { getCalendar } from "../api/calendar";
+import { getMyReminders } from "../api/reminders";
 
 function startOfDay(d: Date) {
   return new Date(d.getFullYear(), d.getMonth(), d.getDate());
@@ -42,6 +43,11 @@ export default function Dashboard() {
   const overdue = dueTasks.filter((t) => new Date(t.dueDateUtc!) < now);
   const upcoming = dueTasks.filter((t) => new Date(t.dueDateUtc!) >= now).slice(0, 5);
   const todayEvents = (todayItems ?? []).filter((i) => i.kind === "event");
+
+  const { data: reminders } = useQuery({ queryKey: ["reminders"], queryFn: getMyReminders });
+  const upcomingReminders = [...(reminders ?? [])]
+    .sort((a, b) => new Date(a.remindAtUtc).getTime() - new Date(b.remindAtUtc).getTime())
+    .slice(0, 5);
 
   return (
     <div>
@@ -88,7 +94,15 @@ export default function Dashboard() {
         </section>
         <section className="card">
           <h2>Active reminders</h2>
-          <p className="empty">No reminders yet — this ships in Phase 3.</p>
+          {upcomingReminders.length === 0 && <p className="empty">Nothing scheduled.</p>}
+          {upcomingReminders.length > 0 && (
+            <ul className="dashboard-list">
+              {upcomingReminders.map((r) => (
+                <li key={r.id} className="dashboard-list-item">{r.title}</li>
+              ))}
+            </ul>
+          )}
+          <Link className="card-link" to="/reminders">View all reminders →</Link>
         </section>
       </div>
 
