@@ -1,11 +1,47 @@
+import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { apiGet, type ApiStatus } from "../api/client";
+import { useHousehold } from "../hooks/useHousehold";
+import { getTasks } from "../api/tasks";
+import { getCalendar } from "../api/calendar";
+
+function startOfDay(d: Date) {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+}
+function endOfDay(d: Date) {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1);
+}
 
 export default function Dashboard() {
-  const { data, isLoading, isError } = useQuery({
+  const { data: status, isLoading, isError } = useQuery({
     queryKey: ["api-status"],
     queryFn: () => apiGet<ApiStatus>("/api/status"),
   });
+
+  const { data: household } = useHousehold();
+  const householdId = household?.id ?? "";
+
+  const { data: tasks } = useQuery({
+    queryKey: ["tasks", householdId],
+    queryFn: () => getTasks(householdId),
+    enabled: !!householdId,
+  });
+
+  const todayStart = startOfDay(new Date()).toISOString();
+  const todayEnd = endOfDay(new Date()).toISOString();
+  const { data: todayItems } = useQuery({
+    queryKey: ["calendar", householdId, todayStart, todayEnd],
+    queryFn: () => getCalendar(householdId, todayStart, todayEnd),
+    enabled: !!householdId,
+  });
+
+  const now = new Date();
+  const dueTasks = (tasks ?? [])
+    .filter((t) => !t.isCompleted && t.dueDateUtc)
+    .sort((a, b) => new Date(a.dueDateUtc!).getTime() - new Date(b.dueDateUtc!).getTime());
+  const overdue = dueTasks.filter((t) => new Date(t.dueDateUtc!) < now);
+  const upcoming = dueTasks.filter((t) => new Date(t.dueDateUtc!) >= now).slice(0, 5);
+  const todayEvents = (todayItems ?? []).filter((i) => i.kind === "event");
 
   return (
     <div>
@@ -15,12 +51,37 @@ export default function Dashboard() {
       <div className="card-grid">
         <section className="card">
           <h2>Tasks due</h2>
-          <p className="empty">No tasks yet — this ships in Phase 2.</p>
+          {overdue.length === 0 && upcoming.length === 0 && <p className="empty">Nothing due — you're clear.</p>}
+          {overdue.length > 0 && (
+            <ul className="dashboard-list">
+              {overdue.map((t) => (
+                <li key={t.id} className="dashboard-list-item overdue">{t.title}</li>
+              ))}
+            </ul>
+          )}
+          {upcoming.length > 0 && (
+            <ul className="dashboard-list">
+              {upcoming.map((t) => (
+                <li key={t.id} className="dashboard-list-item">{t.title}</li>
+              ))}
+            </ul>
+          )}
+          {(overdue.length > 0 || upcoming.length > 0) && <Link className="card-link" to="/tasks">View all tasks →</Link>}
         </section>
+
         <section className="card">
           <h2>Today's events</h2>
-          <p className="empty">No events yet — this ships in Phase 2.</p>
+          {todayEvents.length === 0 && <p className="empty">Nothing on the calendar today.</p>}
+          {todayEvents.length > 0 && (
+            <ul className="dashboard-list">
+              {todayEvents.map((e) => (
+                <li key={e.id} className="dashboard-list-item">{e.title}</li>
+              ))}
+            </ul>
+          )}
+          <Link className="card-link" to="/calendar">Open calendar →</Link>
         </section>
+
         <section className="card">
           <h2>Upcoming bills</h2>
           <p className="empty">No bills yet — this ships in Phase 4.</p>
@@ -34,9 +95,9 @@ export default function Dashboard() {
       <div className="status-strip">
         {isLoading && <span>Connecting to API…</span>}
         {isError && <span className="status-bad">API unreachable — is the backend running?</span>}
-        {data && (
+        {status && (
           <span className="status-ok">
-            Connected to {data.service} · {new Date(data.utc).toLocaleTimeString()}
+            Connected to {status.service} · {new Date(status.utc).toLocaleTimeString()}
           </span>
         )}
       </div>

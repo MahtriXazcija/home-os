@@ -51,6 +51,9 @@ export class ApiError extends Error {
 
 export const apiGet = <T>(path: string) => request<T>("GET", path);
 export const apiPost = <T>(path: string, body?: unknown) => request<T>("POST", path, body ?? {});
+export const apiPut = <T>(path: string, body?: unknown) => request<T>("PUT", path, body ?? {});
+export const apiPatch = <T>(path: string, body?: unknown) => request<T>("PATCH", path, body ?? {});
+export const apiDelete = (path: string) => request<void>("DELETE", path);
 
 export interface ApiStatus {
   service: string;

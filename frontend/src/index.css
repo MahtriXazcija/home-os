@@ -273,3 +273,295 @@ h1 { font-size: 26px; margin: 0 0 6px; }
 }
 
 .link-button:disabled { opacity: .6; cursor: default; }
+
+/* ---- shared form controls ---- */
+input, select {
+  font-family: inherit;
+  font-size: 13.5px;
+}
+
+.card-link {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 12.5px;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.dashboard-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.dashboard-list-item { font-size: 13.5px; }
+.dashboard-list-item.overdue { color: var(--warm); font-weight: 600; }
+
+/* ---- pills / tags (shared) ---- */
+.pill {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: .02em;
+}
+.priority-low { background: var(--accent-soft); color: var(--accent); }
+.priority-medium { background: rgba(184, 138, 15, 0.15); color: #a8760f; }
+.priority-high { background: rgba(184, 85, 47, 0.15); color: var(--warm); }
+
+.tag {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text-soft);
+}
+
+/* ---- tasks page ---- */
+.task-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+  padding: 14px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.task-form input, .task-form select {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 10px;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.task-form-title { flex: 1 1 220px; }
+
+.task-form button {
+  border: none;
+  border-radius: 6px;
+  padding: 7px 16px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.task-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+
+.task-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.task-row.task-done .task-title { text-decoration: line-through; color: var(--text-faint); }
+.task-row.task-overdue .task-due { color: var(--warm); font-weight: 700; }
+
+.task-main { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+.task-title { font-size: 14.5px; }
+
+.task-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 12px; color: var(--text-soft); }
+.task-due { font-family: var(--font-mono); }
+.task-assignee { color: var(--text-soft); }
+
+.task-delete { font-size: 12px; color: var(--text-faint); }
+
+/* ---- kanban page ---- */
+.board-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.board-tab {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text-soft);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.board-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+.board-new-form { display: flex; gap: 6px; margin-left: auto; }
+.board-new-form input {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  background: var(--panel);
+  color: var(--text);
+  font-size: 13px;
+}
+.board-new-form button {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 12px;
+  background: var(--panel);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.card-add-form { display: flex; gap: 8px; margin-bottom: 18px; }
+.card-add-form input {
+  flex: 1;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  background: var(--panel);
+  color: var(--text);
+}
+.card-add-form button {
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.kanban-columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.kanban-column {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  min-height: 200px;
+  padding: 12px;
+}
+
+.kanban-column-head {
+  font-size: 12.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--text-soft);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.kanban-count {
+  background: var(--bg);
+  border-radius: 999px;
+  padding: 1px 7px;
+  font-size: 11px;
+}
+
+.kanban-cards { display: flex; flex-direction: column; gap: 8px; min-height: 40px; }
+
+.kanban-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: var(--bg);
+  cursor: grab;
+}
+
+.kanban-card-title { font-size: 13.5px; margin-bottom: 6px; }
+.kanban-card-meta { display: flex; gap: 6px; align-items: center; font-size: 11px; color: var(--text-soft); }
+
+/* ---- calendar page ---- */
+.calendar-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.calendar-month-label { font-weight: 700; font-size: 15px; min-width: 160px; }
+
+.calendar-add-form { display: flex; gap: 8px; margin-left: auto; }
+.calendar-add-form input {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  background: var(--panel);
+  color: var(--text);
+  font-size: 13px;
+}
+.calendar-add-form button {
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 4px;
+}
+.calendar-weekdays > div { padding: 4px 6px; }
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.calendar-cell {
+  background: var(--panel);
+  min-height: 92px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.calendar-cell.outside-month { background: var(--bg); }
+.calendar-cell.outside-month .calendar-cell-date { color: var(--text-faint); }
+.calendar-cell.today .calendar-cell-date {
+  background: var(--accent);
+  color: #fff;
+  border-radius: 999px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-cell-date { font-size: 12px; color: var(--text-soft); }
+.calendar-cell-items { display: flex; flex-direction: column; gap: 3px; }
+
+.calendar-item {
+  font-size: 10.5px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.calendar-item-event { background: var(--accent-soft); color: var(--accent); }
+.calendar-item-task { background: rgba(184, 85, 47, 0.15); color: var(--warm); }
+
+@media (max-width: 720px) {
+  .kanban-columns { grid-template-columns: 1fr; }
+}

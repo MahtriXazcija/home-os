@@ -7,6 +7,9 @@ import Placeholder from "./pages/Placeholder";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Onboarding from "./pages/Onboarding";
+import Tasks from "./pages/Tasks";
+import Kanban from "./pages/Kanban";
+import CalendarPage from "./pages/Calendar";
 
 export default function App() {
   return (
@@ -20,9 +23,9 @@ export default function App() {
         <Route element={<RequireHousehold />}>
           <Route element={<Layout />}>
             <Route index element={<Dashboard />} />
-            <Route path="tasks" element={<Placeholder title="Tasks" phase="Phase 2" />} />
-            <Route path="kanban" element={<Placeholder title="Kanban" phase="Phase 2" />} />
-            <Route path="calendar" element={<Placeholder title="Calendar" phase="Phase 2" />} />
+            <Route path="tasks" element={<Tasks />} />
+            <Route path="kanban" element={<Kanban />} />
+            <Route path="calendar" element={<CalendarPage />} />
             <Route path="reminders" element={<Placeholder title="Reminders" phase="Phase 3" />} />
             <Route path="notes" element={<Placeholder title="Notes" phase="Phase 4" />} />
             <Route path="finance" element={<Placeholder title="Finance" phase="Phase 4" />} />
