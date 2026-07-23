@@ -358,5 +358,93 @@ BEGIN
     VALUES ('20260723121657_AddTasksBoardsCalendar', '9.0.9');
     END IF;
 END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723124340_AddRemindersNotifications') THEN
+    CREATE TABLE "NotificationPreferences" (
+        "Id" uuid NOT NULL,
+        "UserId" uuid NOT NULL,
+        "Category" integer NOT NULL,
+        "EmailEnabled" boolean NOT NULL,
+        CONSTRAINT "PK_NotificationPreferences" PRIMARY KEY ("Id")
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723124340_AddRemindersNotifications') THEN
+    CREATE TABLE "Notifications" (
+        "Id" uuid NOT NULL,
+        "UserId" uuid NOT NULL,
+        "HouseholdId" uuid NOT NULL,
+        "Category" integer NOT NULL,
+        "Title" character varying(200) NOT NULL,
+        "Message" text,
+        "IsRead" boolean NOT NULL,
+        "CreatedAtUtc" timestamp with time zone NOT NULL,
+        CONSTRAINT "PK_Notifications" PRIMARY KEY ("Id")
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723124340_AddRemindersNotifications') THEN
+    CREATE TABLE "Reminders" (
+        "Id" uuid NOT NULL,
+        "HouseholdId" uuid NOT NULL,
+        "TargetUserId" uuid NOT NULL,
+        "Title" character varying(200) NOT NULL,
+        "Message" text,
+        "RemindAtUtc" timestamp with time zone NOT NULL,
+        "Recurrence" integer NOT NULL,
+        "SourceType" text,
+        "SourceId" uuid,
+        "CreatedByUserId" uuid NOT NULL,
+        "CreatedAtUtc" timestamp with time zone NOT NULL,
+        "IsFired" boolean NOT NULL,
+        "FiredAtUtc" timestamp with time zone,
+        CONSTRAINT "PK_Reminders" PRIMARY KEY ("Id")
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723124340_AddRemindersNotifications') THEN
+    CREATE UNIQUE INDEX "IX_NotificationPreferences_UserId_Category" ON "NotificationPreferences" ("UserId", "Category");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723124340_AddRemindersNotifications') THEN
+    CREATE INDEX "IX_Notifications_UserId_IsRead" ON "Notifications" ("UserId", "IsRead");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723124340_AddRemindersNotifications') THEN
+    CREATE INDEX "IX_Reminders_IsFired_RemindAtUtc" ON "Reminders" ("IsFired", "RemindAtUtc");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723124340_AddRemindersNotifications') THEN
+    CREATE INDEX "IX_Reminders_TargetUserId" ON "Reminders" ("TargetUserId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260723124340_AddRemindersNotifications') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260723124340_AddRemindersNotifications', '9.0.9');
+    END IF;
+END $EF$;
 COMMIT;
 

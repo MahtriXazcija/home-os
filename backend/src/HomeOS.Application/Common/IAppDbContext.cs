@@ -1,5 +1,7 @@
 using HomeOS.Domain.Boards;
 using HomeOS.Domain.Calendar;
+using HomeOS.Domain.Notifications;
+using HomeOS.Domain.Reminders;
 using HomeOS.Domain.Tasks;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +18,9 @@ public interface IAppDbContext
     DbSet<TaskItem> Tasks { get; }
     DbSet<Board> Boards { get; }
     DbSet<CalendarEvent> CalendarEvents { get; }
+    DbSet<Reminder> Reminders { get; }
+    DbSet<Notification> Notifications { get; }
+    DbSet<NotificationPreference> NotificationPreferences { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

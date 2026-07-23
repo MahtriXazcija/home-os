@@ -4,8 +4,11 @@ using System.Text.Json.Serialization;
 using HomeOS.Application.Common;
 using HomeOS.Application.Households;
 using HomeOS.Application.Households.Commands;
+using HomeOS.Application.Notifications;
+using HomeOS.Infrastructure.Email;
 using HomeOS.Infrastructure.Identity;
 using HomeOS.Infrastructure.Persistence;
+using HomeOS.Infrastructure.Reminders;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -59,6 +62,13 @@ if (!string.IsNullOrWhiteSpace(connectionString))
 
     builder.Services.AddScoped<IHouseholdRepository, HouseholdRepository>();
     builder.Services.AddScoped<IAppDbContext>(sp => sp.GetRequiredService<HomeOsDbContext>());
+    builder.Services.AddScoped<IUserDirectory, UserDirectory>();
+    builder.Services.AddScoped<INotificationDispatcher, NotificationDispatcher>();
+
+    builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection(EmailOptions.SectionName));
+    builder.Services.AddHttpClient<IEmailSender, BrevoEmailSender>();
+
+    builder.Services.AddHostedService<ReminderSchedulerService>();
 
     builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName));
     builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();

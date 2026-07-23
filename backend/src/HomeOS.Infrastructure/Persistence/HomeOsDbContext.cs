@@ -3,6 +3,8 @@ using HomeOS.Domain.Boards;
 using HomeOS.Domain.Calendar;
 using HomeOS.Domain.Common;
 using HomeOS.Domain.Households;
+using HomeOS.Domain.Notifications;
+using HomeOS.Domain.Reminders;
 using HomeOS.Domain.Tasks;
 using HomeOS.Infrastructure.Identity;
 using MediatR;
@@ -19,6 +21,9 @@ public class HomeOsDbContext(DbContextOptions<HomeOsDbContext> options, IPublish
     public DbSet<TaskItem> Tasks => Set<TaskItem>();
     public DbSet<Board> Boards => Set<Board>();
     public DbSet<CalendarEvent> CalendarEvents => Set<CalendarEvent>();
+    public DbSet<Reminder> Reminders => Set<Reminder>();
+    public DbSet<Notification> Notifications => Set<Notification>();
+    public DbSet<NotificationPreference> NotificationPreferences => Set<NotificationPreference>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -78,6 +83,27 @@ public class HomeOsDbContext(DbContextOptions<HomeOsDbContext> options, IPublish
             entity.Property(e => e.Title).HasMaxLength(200).IsRequired();
             entity.HasIndex(e => e.HouseholdId);
             entity.HasIndex(e => e.StartUtc);
+        });
+
+        builder.Entity<Reminder>(entity =>
+        {
+            entity.ToTable("Reminders");
+            entity.Property(r => r.Title).HasMaxLength(200).IsRequired();
+            entity.HasIndex(r => r.TargetUserId);
+            entity.HasIndex(r => new { r.IsFired, r.RemindAtUtc });
+        });
+
+        builder.Entity<Notification>(entity =>
+        {
+            entity.ToTable("Notifications");
+            entity.Property(n => n.Title).HasMaxLength(200).IsRequired();
+            entity.HasIndex(n => new { n.UserId, n.IsRead });
+        });
+
+        builder.Entity<NotificationPreference>(entity =>
+        {
+            entity.ToTable("NotificationPreferences");
+            entity.HasIndex(p => new { p.UserId, p.Category }).IsUnique();
         });
     }
 
