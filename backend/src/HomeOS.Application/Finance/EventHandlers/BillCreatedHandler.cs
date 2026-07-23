@@ -21,9 +21,11 @@ public class BillCreatedHandler(IAppDbContext db) : INotificationHandler<DomainE
     {
         var evt = notification.DomainEvent;
 
+        var amount = $"${evt.Amount:F2}";
+
         var task = TaskItem.Create(
             evt.HouseholdId, $"Pay {evt.Title}", evt.CreatedByUserId,
-            description: $"{evt.Amount:C}", dueDateUtc: evt.DueDateUtc);
+            description: amount, dueDateUtc: evt.DueDateUtc);
         db.Tasks.Add(task);
 
         var remindAt = evt.DueDateUtc.AddDays(-ReminderDaysBefore);
@@ -31,7 +33,7 @@ public class BillCreatedHandler(IAppDbContext db) : INotificationHandler<DomainE
         {
             var reminder = Reminder.Create(
                 evt.HouseholdId, evt.CreatedByUserId, $"Bill due soon: {evt.Title}", remindAt, evt.CreatedByUserId,
-                message: $"{evt.Amount:C} due {evt.DueDateUtc:MMM d}", sourceType: "bill", sourceId: evt.BillId);
+                message: $"{amount} due {evt.DueDateUtc:MMM d}", sourceType: "bill", sourceId: evt.BillId);
             db.Reminders.Add(reminder);
         }
 
