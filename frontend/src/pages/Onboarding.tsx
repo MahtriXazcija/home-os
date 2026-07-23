@@ -21,8 +21,8 @@ export default function Onboarding() {
     setError(null);
     setIsSubmitting(true);
     try {
-      await createHousehold(householdName);
-      await queryClient.invalidateQueries({ queryKey: ["my-household"] });
+      const household = await createHousehold(householdName);
+      queryClient.setQueryData(["my-household"], household);
       navigate("/");
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Could not create household.");
@@ -36,8 +36,8 @@ export default function Onboarding() {
     setError(null);
     setIsSubmitting(true);
     try {
-      await acceptInvitation(inviteToken.trim());
-      await queryClient.invalidateQueries({ queryKey: ["my-household"] });
+      const household = await acceptInvitation(inviteToken.trim());
+      queryClient.setQueryData(["my-household"], household);
       navigate("/");
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Could not join household — check the invite link.");
