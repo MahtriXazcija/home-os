@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json;
 using HomeOS.Application.Households;
 using HomeOS.Application.Households.Commands;
 using HomeOS.Infrastructure.Identity;
@@ -86,6 +87,29 @@ if (!string.IsNullOrWhiteSpace(connectionString))
 }
 
 var app = builder.Build();
+
+// Placed first so it wraps every downstream middleware, including CORS —
+// otherwise an unhandled exception aborts the connection before CORS
+// headers are attached, and the browser reports a misleading "Failed to
+// fetch" instead of the real error.
+app.Use(async (context, next) =>
+{
+    try
+    {
+        await next(context);
+    }
+    catch (Exception ex)
+    {
+        app.Logger.LogError(ex, "Unhandled exception for {Method} {Path}", context.Request.Method, context.Request.Path);
+        context.Response.StatusCode = 500;
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsync(JsonSerializer.Serialize(new
+        {
+            error = ex.GetType().Name,
+            message = ex.Message
+        }));
+    }
+});
 
 if (app.Environment.IsDevelopment())
 {
