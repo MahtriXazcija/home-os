@@ -3,6 +3,7 @@ import { NavLink, Outlet } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getMyHousehold, inviteMember } from "../api/household";
 import { useAuth } from "../auth/AuthContext";
+import NotificationBell from "./NotificationBell";
 
 const NAV_ITEMS = [
   { to: "/", label: "Dashboard", end: true },
@@ -63,7 +64,7 @@ export default function Layout() {
               <button type="button" className="link-button" onClick={handleInvite} disabled={isInviting}>
                 {isInviting ? "Inviting…" : "Invite a member"}
               </button>
-              {inviteLink && <p className="invite-link-hint">Link copied — share it manually (email notifications ship in Phase 3).</p>}
+              {inviteLink && <p className="invite-link-hint">Link copied — share it manually (invites aren't emailed yet).</p>}
             </div>
           )}
           <div className="user-info">
@@ -75,6 +76,7 @@ export default function Layout() {
       <div className="main-column">
         <header className="topbar">
           <input className="quick-capture" placeholder="Quick capture — add a task, note, or reminder…" />
+          <NotificationBell />
         </header>
         <main className="content">
           <Outlet />
