@@ -77,11 +77,12 @@ if (!string.IsNullOrWhiteSpace(connectionString))
     builder.Services.Configure<FrontendOptions>(builder.Configuration.GetSection(FrontendOptions.SectionName));
     builder.Services.AddScoped<IFrontendLinkBuilder, FrontendLinkBuilder>();
 
-    // Page assistant — set "Anthropic:ApiKey" (env var Anthropic__ApiKey) to
-    // enable it. Without a key it just returns a "not configured yet" reply
-    // instead of failing the request.
-    builder.Services.Configure<AnthropicOptions>(builder.Configuration.GetSection(AnthropicOptions.SectionName));
-    builder.Services.AddHttpClient<IAiAssistantClient, AnthropicAiAssistantClient>();
+    // Page assistant — set "Gemini:ApiKey" (env var Gemini__ApiKey) to
+    // enable it (free tier via aistudio.google.com, no card required).
+    // Without a key it just returns a "not configured yet" reply instead of
+    // failing the request.
+    builder.Services.Configure<GeminiOptions>(builder.Configuration.GetSection(GeminiOptions.SectionName));
+    builder.Services.AddHttpClient<IAiAssistantClient, GeminiAiAssistantClient>();
 
     builder.Services.AddHostedService<ReminderSchedulerService>();
 
