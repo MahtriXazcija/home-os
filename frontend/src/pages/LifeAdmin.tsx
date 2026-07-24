@@ -13,6 +13,7 @@ import {
   getShoppingItems,
   setShoppingItemChecked,
 } from "../api/lifeAdmin";
+import Icon from "../components/Icon";
 
 export default function LifeAdmin() {
   const { data: household } = useHousehold();
@@ -66,20 +67,61 @@ export default function LifeAdmin() {
   });
   const deleteItemMutation = useMutation({ mutationFn: deleteShoppingItem, onSuccess: () => invalidate("shopping-items") });
 
+  const docs = documents ?? [];
+  const contactList = contacts ?? [];
+  const items = shoppingItems ?? [];
+  const soon = new Date();
+  soon.setDate(soon.getDate() + 30);
+  const renewingSoon = docs.filter((d) => d.renewalDateUtc && new Date(d.renewalDateUtc) <= soon).length;
+  const pendingItems = items.filter((i) => !i.isChecked).length;
+
   return (
     <div>
       <h1>Life Admin</h1>
       <p className="dek">Household records, important contacts, and the shared shopping list.</p>
 
-      <h2 className="section-heading">Documents &amp; renewals</h2>
-      <form className="task-form" onSubmit={handleAddDoc}>
-        <input className="task-form-title" placeholder="e.g. Car insurance" value={docTitle} onChange={(e) => setDocTitle(e.target.value)} />
-        <input placeholder="Category" value={docCategory} onChange={(e) => setDocCategory(e.target.value)} />
-        <input type="date" value={docRenewal} onChange={(e) => setDocRenewal(e.target.value)} title="Renewal date (optional)" />
-        <button type="submit" disabled={createDocMutation.isPending}>Add</button>
-      </form>
-      <ul className="task-list" style={{ marginBottom: 28 }}>
-        {(documents ?? []).map((d) => (
+      <div className="stat-strip">
+        <div className="stat-chip">
+          <div>
+            <div className="stat-chip-num">{docs.length}</div>
+            <div className="stat-chip-label">Documents</div>
+          </div>
+        </div>
+        <div className={`stat-chip${renewingSoon > 0 ? " warn" : ""}`}>
+          <div>
+            <div className="stat-chip-num">{renewingSoon}</div>
+            <div className="stat-chip-label">Renewing in 30d</div>
+          </div>
+        </div>
+        <div className="stat-chip">
+          <div>
+            <div className="stat-chip-num">{contactList.length}</div>
+            <div className="stat-chip-label">Contacts</div>
+          </div>
+        </div>
+        <div className="stat-chip">
+          <div>
+            <div className="stat-chip-num">{pendingItems}</div>
+            <div className="stat-chip-label">To buy</div>
+          </div>
+        </div>
+      </div>
+
+      <div className="section-header-row">
+        <span className="app-icon"><Icon name="archive" /></span>
+        <h2>Documents &amp; renewals</h2>
+        <span className="section-header-count">{docs.length}</span>
+      </div>
+      <div className="quick-add-card">
+        <form className="task-form" onSubmit={handleAddDoc}>
+          <input className="task-form-title" placeholder="e.g. Car insurance" value={docTitle} onChange={(e) => setDocTitle(e.target.value)} />
+          <input placeholder="Category" value={docCategory} onChange={(e) => setDocCategory(e.target.value)} />
+          <input type="date" value={docRenewal} onChange={(e) => setDocRenewal(e.target.value)} title="Renewal date (optional)" />
+          <button type="submit" disabled={createDocMutation.isPending}>Add</button>
+        </form>
+      </div>
+      <ul className="task-list" style={{ marginBottom: 8 }}>
+        {docs.map((d) => (
           <li key={d.id} className="task-row">
             <div className="task-main">
               <span className="task-title">{d.title}</span>
@@ -91,17 +133,23 @@ export default function LifeAdmin() {
             <button type="button" className="link-button task-delete" onClick={() => deleteDocMutation.mutate(d.id)}>Delete</button>
           </li>
         ))}
-        {(documents ?? []).length === 0 && <p className="empty">No documents yet.</p>}
+        {docs.length === 0 && <p className="empty">No documents yet.</p>}
       </ul>
 
-      <h2 className="section-heading">Contacts</h2>
-      <form className="task-form" onSubmit={handleAddContact}>
-        <input className="task-form-title" placeholder="Name" value={contactName} onChange={(e) => setContactName(e.target.value)} />
-        <input placeholder="Phone" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} />
-        <button type="submit" disabled={createContactMutation.isPending}>Add</button>
-      </form>
-      <ul className="task-list" style={{ marginBottom: 28 }}>
-        {(contacts ?? []).map((c) => (
+      <div className="section-header-row">
+        <span className="app-icon"><Icon name="users" /></span>
+        <h2>Contacts</h2>
+        <span className="section-header-count">{contactList.length}</span>
+      </div>
+      <div className="quick-add-card">
+        <form className="task-form" onSubmit={handleAddContact}>
+          <input className="task-form-title" placeholder="Name" value={contactName} onChange={(e) => setContactName(e.target.value)} />
+          <input placeholder="Phone" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} />
+          <button type="submit" disabled={createContactMutation.isPending}>Add</button>
+        </form>
+      </div>
+      <ul className="task-list" style={{ marginBottom: 8 }}>
+        {contactList.map((c) => (
           <li key={c.id} className="task-row">
             <div className="task-main">
               <span className="task-title">{c.name}</span>
@@ -110,10 +158,14 @@ export default function LifeAdmin() {
             <button type="button" className="link-button task-delete" onClick={() => deleteContactMutation.mutate(c.id)}>Delete</button>
           </li>
         ))}
-        {(contacts ?? []).length === 0 && <p className="empty">No contacts yet.</p>}
+        {contactList.length === 0 && <p className="empty">No contacts yet.</p>}
       </ul>
 
-      <h2 className="section-heading">Shopping list</h2>
+      <div className="section-header-row">
+        <span className="app-icon"><Icon name="check-square" /></span>
+        <h2>Shopping list</h2>
+        <span className="section-header-count">{items.length}</span>
+      </div>
       <form
         className="card-add-form"
         onSubmit={(e) => { e.preventDefault(); if (itemText.trim()) addItemMutation.mutate(itemText); }}
@@ -122,14 +174,14 @@ export default function LifeAdmin() {
         <button type="submit" disabled={addItemMutation.isPending}>Add</button>
       </form>
       <ul className="task-list">
-        {(shoppingItems ?? []).map((item) => (
+        {items.map((item) => (
           <li key={item.id} className={`task-row${item.isChecked ? " task-done" : ""}`}>
             <input type="checkbox" checked={item.isChecked} onChange={(e) => checkItemMutation.mutate({ id: item.id, checked: e.target.checked })} />
             <div className="task-main"><span className="task-title">{item.text}</span></div>
             <button type="button" className="link-button task-delete" onClick={() => deleteItemMutation.mutate(item.id)}>Remove</button>
           </li>
         ))}
-        {(shoppingItems ?? []).length === 0 && <p className="empty">List is empty.</p>}
+        {items.length === 0 && <p className="empty">List is empty.</p>}
       </ul>
     </div>
   );

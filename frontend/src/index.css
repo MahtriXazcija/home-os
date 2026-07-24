@@ -1024,6 +1024,92 @@ input, select {
 }
 .section-heading:first-of-type { margin-top: 0; }
 
+/* ---- stat strip — a row of at-a-glance metrics under the page header,
+   used on Reminders/Notes/Life Admin instead of dropping straight into a
+   flat list ---- */
+.stat-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: -6px 0 24px;
+}
+
+.stat-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-m);
+  padding: 10px 16px;
+  box-shadow: var(--shadow-sm);
+  min-width: 130px;
+}
+
+.stat-chip-num { font-size: 19px; font-weight: 700; line-height: 1; }
+.stat-chip-label { font-size: 11.5px; color: var(--text-soft); }
+.stat-chip.warn .stat-chip-num { color: var(--warm); }
+.stat-chip.good .stat-chip-num { color: var(--good); }
+
+/* ---- section header with icon + count, replaces the bare uppercase
+   .section-heading on pages using the grouped layout ---- */
+.section-header-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 30px 0 12px;
+}
+.section-header-row:first-of-type { margin-top: 0; }
+.section-header-row h2 {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text);
+}
+.section-header-count {
+  font-size: 11.5px;
+  color: var(--text-faint);
+  background: var(--panel-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 1px 9px;
+  margin-left: -2px;
+}
+
+/* ---- quick-add card wrapper — gives the create-forms a distinct,
+   bounded "add something" affordance instead of floating inline ---- */
+.quick-add-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-m);
+  box-shadow: var(--shadow-sm);
+  padding: 14px 16px;
+  margin-bottom: 22px;
+}
+.quick-add-card .task-form { margin-bottom: 0; padding: 0; border: none; box-shadow: none; }
+
+/* ---- journal spotlight card (Notes) ---- */
+.journal-spotlight {
+  background: linear-gradient(135deg, var(--accent-soft), var(--panel));
+  border: 1px solid var(--border);
+  border-radius: var(--radius-l);
+  padding: 18px 20px;
+  margin-bottom: 26px;
+  box-shadow: var(--shadow-sm);
+}
+.journal-spotlight-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.journal-spotlight-content { font-size: 14.5px; white-space: pre-wrap; }
+
 /* ---- notes ---- */
 .note-grid {
   display: grid;
