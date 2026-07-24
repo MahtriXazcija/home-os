@@ -61,8 +61,10 @@ export default function Layout() {
       <div className={`sidebar-backdrop${mobileNavOpen ? " open" : ""}`} onClick={() => setMobileNavOpen(false)} />
       <aside className={`sidebar${mobileNavOpen ? " open" : ""}${collapsed ? " collapsed" : ""}`}>
         <div className="brand">
-          <span className="brand-mark"><Icon name="home" size={15} /></span>
-          <span className="brand-text"><HomeOSLogo size="sm" /></span>
+          <NavLink to="/" end className="brand-link" title="Go to Dashboard">
+            <span className="brand-mark"><Icon name="home" size={15} /></span>
+            <span className="brand-text"><HomeOSLogo size="sm" /></span>
+          </NavLink>
           <button
             type="button"
             className="sidebar-toggle"

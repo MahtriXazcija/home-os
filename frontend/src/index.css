@@ -149,7 +149,6 @@ button, input, select, textarea { font-family: inherit; }
 .brand {
   display: flex;
   align-items: center;
-  gap: 9px;
   font-family: var(--font-sans);
   font-weight: 700;
   font-size: 17px;
@@ -157,6 +156,18 @@ button, input, select, textarea { font-family: inherit; }
   color: var(--text);
   padding: 0 10px;
 }
+
+.brand-link {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  text-decoration: none;
+  color: inherit;
+  border-radius: var(--radius-s);
+  padding: 4px 4px 4px 0;
+  transition: opacity .15s ease;
+}
+.brand-link:hover { opacity: .8; }
 
 .sidebar-toggle {
   margin-left: auto;
