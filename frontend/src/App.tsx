@@ -13,6 +13,7 @@ import Reminders from "./pages/Reminders";
 import Notes from "./pages/Notes";
 import Finance from "./pages/Finance";
 import LifeAdmin from "./pages/LifeAdmin";
+import ManageApps from "./pages/ManageApps";
 
 export default function App() {
   return (
@@ -33,6 +34,7 @@ export default function App() {
             <Route path="notes" element={<Notes />} />
             <Route path="finance" element={<Finance />} />
             <Route path="life-admin" element={<LifeAdmin />} />
+            <Route path="apps" element={<ManageApps />} />
           </Route>
         </Route>
       </Route>

@@ -717,3 +717,95 @@ input, select {
   cursor: pointer;
   font-size: 12.5px;
 }
+
+/* ---- command palette ---- */
+.palette-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 16, 22, 0.5);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 12vh;
+  z-index: 100;
+}
+
+.palette {
+  width: 100%;
+  max-width: 520px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 24px 60px -12px rgba(0,0,0,0.4);
+  padding: 14px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.palette-input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 15px;
+  background: var(--bg);
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+.palette-section-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--text-faint);
+  margin: 10px 4px 4px;
+}
+
+.palette-list { display: flex; flex-direction: column; gap: 2px; }
+
+.palette-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: none;
+  border-radius: 6px;
+  padding: 9px 10px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--text);
+}
+.palette-item:hover { background: var(--accent-soft); }
+.palette-item-meta { font-size: 11px; color: var(--text-faint); text-transform: uppercase; }
+
+.palette-empty { padding: 8px 10px; font-size: 13px; color: var(--text-faint); }
+
+/* ---- manage apps ---- */
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.app-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.app-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.app-card-name { font-weight: 700; font-size: 14.5px; }
+.app-card-desc { font-size: 13px; color: var(--text-soft); margin: 0 0 10px; }
+.app-card-permissions { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
+.tag-granted { border-color: var(--good); color: var(--good); }
+.app-card-events { font-size: 11px; color: var(--text-faint); font-family: var(--font-mono); margin-top: 4px; }

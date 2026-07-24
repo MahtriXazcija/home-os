@@ -1,26 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getMyHousehold, inviteMember } from "../api/household";
 import { useAuth } from "../auth/AuthContext";
+import { useApps } from "../hooks/useApps";
 import NotificationBell from "./NotificationBell";
-
-const NAV_ITEMS = [
-  { to: "/", label: "Dashboard", end: true },
-  { to: "/tasks", label: "Tasks" },
-  { to: "/kanban", label: "Kanban" },
-  { to: "/calendar", label: "Calendar" },
-  { to: "/reminders", label: "Reminders" },
-  { to: "/notes", label: "Notes" },
-  { to: "/finance", label: "Finance" },
-  { to: "/life-admin", label: "Life Admin" },
-];
+import CommandPalette from "./CommandPalette";
 
 export default function Layout() {
   const { user, logout } = useAuth();
   const { data: household } = useQuery({ queryKey: ["my-household"], queryFn: getMyHousehold });
+  const { data: apps } = useApps();
   const [inviteLink, setInviteLink] = useState<string | null>(null);
   const [isInviting, setIsInviting] = useState(false);
+  const [paletteOpen, setPaletteOpen] = useState(false);
+
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setPaletteOpen(true);
+      }
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
 
   async function handleInvite() {
     if (!household) return;
@@ -39,21 +43,28 @@ export default function Layout() {
     }
   }
 
+  // Nav is driven by which apps are installed — this is the same registry
+  // a third-party app would register into, not a hardcoded list per app.
+  const installedApps = (apps ?? []).filter((a) => a.isInstalled);
+
   return (
     <div className="app-shell">
       <aside className="sidebar">
         <div className="brand">Home OS</div>
         <nav>
-          {NAV_ITEMS.map((item) => (
+          {installedApps.map((app) => (
             <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.end}
+              key={app.id}
+              to={app.navRoute}
+              end={app.navRoute === "/"}
               className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
             >
-              {item.label}
+              {app.navLabel}
             </NavLink>
           ))}
+          <NavLink to="/apps" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
+            Manage apps
+          </NavLink>
         </nav>
 
         <div className="sidebar-footer">
@@ -75,13 +86,19 @@ export default function Layout() {
       </aside>
       <div className="main-column">
         <header className="topbar">
-          <input className="quick-capture" placeholder="Quick capture — add a task, note, or reminder…" />
+          <input
+            className="quick-capture"
+            placeholder="Search or jump to… (⌘K)"
+            onFocus={() => setPaletteOpen(true)}
+            readOnly
+          />
           <NotificationBell />
         </header>
         <main className="content">
           <Outlet />
         </main>
       </div>
+      <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
     </div>
   );
 }
