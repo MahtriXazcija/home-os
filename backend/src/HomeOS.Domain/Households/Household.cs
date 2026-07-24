@@ -80,4 +80,26 @@ public class Household : AggregateRoot
 
         return member;
     }
+
+    public void RemoveMember(Guid userId, Guid removedByUserId)
+    {
+        var remover = _members.SingleOrDefault(m => m.UserId == removedByUserId)
+            ?? throw new InvalidOperationException("You are not a member of this household.");
+
+        if (remover.Role != HouseholdRole.Owner)
+        {
+            throw new InvalidOperationException("Only the administrator can remove members.");
+        }
+
+        var target = _members.SingleOrDefault(m => m.UserId == userId)
+            ?? throw new InvalidOperationException("That member is not part of this household.");
+
+        if (target.Role == HouseholdRole.Owner)
+        {
+            throw new InvalidOperationException("The administrator can't be removed.");
+        }
+
+        _members.Remove(target);
+        Raise(new MemberRemovedEvent(Id, userId, removedByUserId));
+    }
 }

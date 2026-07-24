@@ -70,4 +70,18 @@ public class HouseholdsController(ISender sender) : ControllerBase
             return Conflict(ex.Message);
         }
     }
+
+    [HttpDelete("{id:guid}/members/{userId:guid}")]
+    public async Task<IActionResult> RemoveMember(Guid id, Guid userId, CancellationToken ct)
+    {
+        try
+        {
+            await sender.Send(new RemoveMemberCommand(id, userId, CurrentUserId), ct);
+            return NoContent();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(ex.Message);
+        }
+    }
 }

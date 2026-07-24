@@ -1,6 +1,6 @@
 import { apiGet, apiPost, apiPut } from "./client";
 
-export type NotificationCategory = "ReminderFired" | "TaskAssigned" | "BillDue" | "SharedWithYou";
+export type NotificationCategory = "ReminderFired" | "TaskAssigned" | "BillDue" | "SharedWithYou" | "ChatMessage";
 
 export interface AppNotification {
   id: string;

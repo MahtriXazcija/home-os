@@ -14,7 +14,10 @@ const CATEGORY_LABELS: Record<NotificationCategory, string> = {
   TaskAssigned: "Tasks assigned to you",
   BillDue: "Bills coming due",
   SharedWithYou: "Shared with you",
+  ChatMessage: "Chat messages",
 };
+
+const HISTORY_LIMIT = 5;
 
 function timeAgo(iso: string) {
   const diffMs = Date.now() - new Date(iso).getTime();
@@ -55,6 +58,7 @@ export default function NotificationBell() {
   });
 
   const unreadCount = (notifications ?? []).filter((n) => !n.isRead).length;
+  const recent = (notifications ?? []).slice(0, HISTORY_LIMIT);
 
   return (
     <div className="notification-bell">
@@ -66,7 +70,7 @@ export default function NotificationBell() {
       {open && (
         <div className="notification-panel">
           <div className="notification-panel-head">
-            <span>Notifications</span>
+            <span>Notifications{unreadCount > 0 ? ` · ${unreadCount} new` : ""}</span>
             <button type="button" className="link-button" onClick={() => setShowSettings(!showSettings)}>
               {showSettings ? "Back" : "Settings"}
             </button>
@@ -74,17 +78,20 @@ export default function NotificationBell() {
 
           {!showSettings && (
             <div className="notification-list">
-              {(notifications ?? []).length === 0 && <p className="empty">Nothing yet.</p>}
-              {(notifications ?? []).map((n) => (
+              {recent.length === 0 && <p className="empty">Nothing yet.</p>}
+              {recent.map((n) => (
                 <button
                   type="button"
                   key={n.id}
                   className={`notification-item${n.isRead ? "" : " unread"}`}
                   onClick={() => !n.isRead && markReadMutation.mutate(n.id)}
                 >
-                  <div className="notification-item-title">{n.title}</div>
-                  {n.message && <div className="notification-item-message">{n.message}</div>}
-                  <div className="notification-item-time">{timeAgo(n.createdAtUtc)}</div>
+                  {!n.isRead && <span className="notification-dot" />}
+                  <div className="notification-item-body">
+                    <div className="notification-item-title">{n.title}</div>
+                    {n.message && <div className="notification-item-message">{n.message}</div>}
+                    <div className="notification-item-time">{timeAgo(n.createdAtUtc)}</div>
+                  </div>
                 </button>
               ))}
             </div>

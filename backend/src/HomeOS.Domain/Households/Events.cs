@@ -17,3 +17,8 @@ public record MemberJoinedEvent(Guid HouseholdId, Guid UserId) : IDomainEvent
 {
     public DateTime OccurredAtUtc { get; } = DateTime.UtcNow;
 }
+
+public record MemberRemovedEvent(Guid HouseholdId, Guid UserId, Guid RemovedByUserId) : IDomainEvent
+{
+    public DateTime OccurredAtUtc { get; } = DateTime.UtcNow;
+}

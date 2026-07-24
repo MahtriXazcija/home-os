@@ -8,6 +8,7 @@ import { useChatUnread } from "../hooks/useChatUnread";
 import NotificationBell from "./NotificationBell";
 import CommandPalette from "./CommandPalette";
 import InviteMemberModal from "./InviteMemberModal";
+import MembersModal from "./MembersModal";
 import Icon, { type IconName } from "./Icon";
 
 const SIDEBAR_COLLAPSED_KEY = "homeos.sidebarCollapsed";
@@ -17,6 +18,7 @@ export default function Layout() {
   const { data: household } = useQuery({ queryKey: ["my-household"], queryFn: getMyHousehold });
   const { data: apps } = useApps();
   const [inviteOpen, setInviteOpen] = useState(false);
+  const [membersOpen, setMembersOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(() => localStorage.getItem(SIDEBAR_COLLAPSED_KEY) !== "false");
@@ -97,10 +99,11 @@ export default function Layout() {
           {household && (
             <div className="household-info">
               <div className="household-name">{household.name}</div>
-              <div className="household-members">
+              <button type="button" className="link-button household-members-btn" onClick={() => setMembersOpen(true)}>
+                <Icon name="users" size={13} />
                 {household.members.length} member{household.members.length === 1 ? "" : "s"}
                 {myRoleLabel && <span className="pill role-pill-inline">{myRoleLabel}</span>}
-              </div>
+              </button>
               <button type="button" className="link-button" onClick={() => setInviteOpen(true)}>
                 <Icon name="mail" size={13} />
                 <span className="nav-link-label">Invite a member</span>
@@ -145,6 +148,15 @@ export default function Layout() {
       <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
       {household && (
         <InviteMemberModal open={inviteOpen} householdId={household.id} onClose={() => setInviteOpen(false)} />
+      )}
+      {household && (
+        <MembersModal
+          open={membersOpen}
+          household={household}
+          currentUserId={user?.userId ?? ""}
+          isAdmin={myRole === "Owner"}
+          onClose={() => setMembersOpen(false)}
+        />
       )}
     </div>
   );

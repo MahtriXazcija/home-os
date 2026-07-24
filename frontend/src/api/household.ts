@@ -1,4 +1,4 @@
-import { apiGet, apiPost, ApiError } from "./client";
+import { apiDelete, apiGet, apiPost, ApiError } from "./client";
 
 export interface Member {
   userId: string;
@@ -37,3 +37,6 @@ export const inviteMember = (householdId: string, email: string) =>
 
 export const acceptInvitation = (token: string) =>
   apiPost<Household>("/api/households/invitations/accept", { token });
+
+export const removeMember = (householdId: string, userId: string) =>
+  apiDelete(`/api/households/${householdId}/members/${userId}`);

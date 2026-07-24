@@ -6,5 +6,6 @@ public enum NotificationCategory
     ReminderFired,
     TaskAssigned,
     BillDue,
-    SharedWithYou
+    SharedWithYou,
+    ChatMessage
 }
