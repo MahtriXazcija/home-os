@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getMyHousehold, inviteMember } from "../api/household";
 import { useAuth } from "../auth/AuthContext";
@@ -14,6 +14,8 @@ export default function Layout() {
   const [inviteLink, setInviteLink] = useState<string | null>(null);
   const [isInviting, setIsInviting] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
@@ -25,6 +27,11 @@ export default function Layout() {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
+
+  // Close the mobile drawer whenever navigation happens.
+  useEffect(() => {
+    setMobileNavOpen(false);
+  }, [location.pathname]);
 
   async function handleInvite() {
     if (!household) return;
@@ -49,7 +56,8 @@ export default function Layout() {
 
   return (
     <div className="app-shell">
-      <aside className="sidebar">
+      <div className={`sidebar-backdrop${mobileNavOpen ? " open" : ""}`} onClick={() => setMobileNavOpen(false)} />
+      <aside className={`sidebar${mobileNavOpen ? " open" : ""}`}>
         <div className="brand">Home OS</div>
         <nav>
           {installedApps.map((app) => (
@@ -86,6 +94,14 @@ export default function Layout() {
       </aside>
       <div className="main-column">
         <header className="topbar">
+          <button
+            type="button"
+            className="mobile-menu-button"
+            onClick={() => setMobileNavOpen(true)}
+            aria-label="Open menu"
+          >
+            ☰
+          </button>
           <input
             className="quick-capture"
             placeholder="Search or jump to… (⌘K)"

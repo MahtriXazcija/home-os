@@ -86,23 +86,25 @@ export default function CalendarPage() {
         </form>
       </div>
 
-      <div className="calendar-weekdays">
-        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => <div key={d}>{d}</div>)}
-      </div>
+      <div className="calendar-scroll">
+        <div className="calendar-weekdays">
+          {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => <div key={d}>{d}</div>)}
+        </div>
 
-      <div className="calendar-grid">
-        {days.map((day) => (
-          <div key={day.toISOString()} className={`calendar-cell${day.getMonth() !== monthStart.getMonth() ? " outside-month" : ""}${sameDay(day, new Date()) ? " today" : ""}`}>
-            <div className="calendar-cell-date">{day.getDate()}</div>
-            <div className="calendar-cell-items">
-              {itemsFor(day).map((item) => (
-                <div key={item.id} className={`calendar-item calendar-item-${item.kind}`} title={item.title}>
-                  {item.title}
-                </div>
-              ))}
+        <div className="calendar-grid">
+          {days.map((day) => (
+            <div key={day.toISOString()} className={`calendar-cell${day.getMonth() !== monthStart.getMonth() ? " outside-month" : ""}${sameDay(day, new Date()) ? " today" : ""}`}>
+              <div className="calendar-cell-date">{day.getDate()}</div>
+              <div className="calendar-cell-items">
+                {itemsFor(day).map((item) => (
+                  <div key={item.id} className={`calendar-item calendar-item-${item.kind}`} title={item.title}>
+                    {item.title}
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

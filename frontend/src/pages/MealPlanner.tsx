@@ -92,29 +92,31 @@ export default function MealPlanner() {
         <button type="button" className="link-button" onClick={() => setCursor(new Date(cursor.getTime() + 7 * 24 * 60 * 60 * 1000))}>Next week →</button>
       </div>
 
-      <div className="meal-grid">
-        <div className="meal-grid-corner" />
-        {days.map((d) => (
-          <div key={d.toISOString()} className="meal-grid-day">{d.toLocaleDateString(undefined, { weekday: "short", day: "numeric" })}</div>
-        ))}
-        {MEAL_TYPES.map((type) => (
-          <>
-            <div key={type} className="meal-grid-type">{type}</div>
-            {days.map((d) => {
-              const entry = entryFor(d, type);
-              return (
-                <div key={`${type}-${d.toISOString()}`} className="meal-grid-cell">
-                  {entry && (
-                    <div className="meal-grid-entry">
-                      <span>{entry.title}</span>
-                      <button type="button" className="link-button" onClick={() => deleteMutation.mutate(entry.id)}>×</button>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </>
-        ))}
+      <div className="meal-grid-scroll">
+        <div className="meal-grid">
+          <div className="meal-grid-corner" />
+          {days.map((d) => (
+            <div key={d.toISOString()} className="meal-grid-day">{d.toLocaleDateString(undefined, { weekday: "short", day: "numeric" })}</div>
+          ))}
+          {MEAL_TYPES.map((type) => (
+            <>
+              <div key={type} className="meal-grid-type">{type}</div>
+              {days.map((d) => {
+                const entry = entryFor(d, type);
+                return (
+                  <div key={`${type}-${d.toISOString()}`} className="meal-grid-cell">
+                    {entry && (
+                      <div className="meal-grid-entry">
+                        <span>{entry.title}</span>
+                        <button type="button" className="link-button" onClick={() => deleteMutation.mutate(entry.id)}>×</button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </>
+          ))}
+        </div>
       </div>
     </div>
   );
