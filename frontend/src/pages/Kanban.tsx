@@ -1,8 +1,8 @@
-import { useEffect, useState, type DragEvent, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useHousehold } from "../hooks/useHousehold";
 import { getBoards, createBoard, type Board } from "../api/boards";
-import { changeTaskStatus, createTask, getTasks, type Task, type TaskStatus } from "../api/tasks";
+import { changeTaskStatus, createTask, getTasks, type Task, type TaskPriority, type TaskStatus } from "../api/tasks";
 
 const COLUMNS: { status: TaskStatus; label: string }[] = [
   { status: "Todo", label: "To do" },
@@ -24,7 +24,9 @@ export default function Kanban() {
   const [activeBoardId, setActiveBoardId] = useState<string | null>(null);
   const [newBoardName, setNewBoardName] = useState("");
   const [newCardTitle, setNewCardTitle] = useState("");
-  const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
+  const [newCardDueDate, setNewCardDueDate] = useState("");
+  const [newCardPriority, setNewCardPriority] = useState<TaskPriority>("Medium");
+  const [newCardAssignee, setNewCardAssignee] = useState("");
 
   useEffect(() => {
     if (!activeBoardId && boards && boards.length > 0) {
@@ -56,6 +58,9 @@ export default function Kanban() {
     mutationFn: createTask,
     onSuccess: () => {
       setNewCardTitle("");
+      setNewCardDueDate("");
+      setNewCardPriority("Medium");
+      setNewCardAssignee("");
       invalidate();
     },
   });
@@ -77,27 +82,23 @@ export default function Kanban() {
     createCardMutation.mutate({
       householdId,
       title: newCardTitle,
-      priority: "Medium",
+      dueDateUtc: newCardDueDate ? new Date(newCardDueDate).toISOString() : null,
+      priority: newCardPriority,
+      assignedToUserId: newCardAssignee || null,
       recurrence: "None",
       tags: [],
       boardId: activeBoardId,
     });
   }
 
-  function handleDrop(e: DragEvent, status: TaskStatus) {
-    e.preventDefault();
-    if (draggedTaskId) {
-      statusMutation.mutate({ id: draggedTaskId, status });
-      setDraggedTaskId(null);
-    }
-  }
+  const memberName = (userId: string | null) => household?.members.find((m) => m.userId === userId)?.displayName;
 
   const cardsFor = (status: TaskStatus) => (tasks ?? []).filter((t) => t.status === status);
 
   return (
     <div>
       <h1>Kanban</h1>
-      <p className="dek">Drag cards across columns — the same tasks show up on the Tasks list and Calendar too.</p>
+      <p className="dek">Move a card to a different column with the status picker — the same tasks show up on the Tasks list and Calendar too.</p>
 
       <div className="board-switcher">
         {boards?.map((b) => (
@@ -120,37 +121,56 @@ export default function Kanban() {
 
       {activeBoardId && (
         <>
-          <form className="card-add-form" onSubmit={handleAddCard}>
-            <input placeholder="Add a card to To do…" value={newCardTitle} onChange={(e) => setNewCardTitle(e.target.value)} />
-            <button type="submit" disabled={createCardMutation.isPending}>Add card</button>
-          </form>
+          <div className="quick-add-card">
+            <form className="task-form" onSubmit={handleAddCard}>
+              <input
+                className="task-form-title"
+                placeholder="Add a card to To do…"
+                value={newCardTitle}
+                onChange={(e) => setNewCardTitle(e.target.value)}
+              />
+              <input type="date" value={newCardDueDate} onChange={(e) => setNewCardDueDate(e.target.value)} title="Due date (optional)" />
+              <select value={newCardPriority} onChange={(e) => setNewCardPriority(e.target.value as TaskPriority)}>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+              </select>
+              <select value={newCardAssignee} onChange={(e) => setNewCardAssignee(e.target.value)}>
+                <option value="">Unassigned</option>
+                {household?.members.map((m) => (
+                  <option key={m.userId} value={m.userId}>{m.displayName}</option>
+                ))}
+              </select>
+              <button type="submit" disabled={createCardMutation.isPending}>Add card</button>
+            </form>
+          </div>
 
           <div className="kanban-columns">
             {COLUMNS.map((col) => (
-              <div
-                key={col.status}
-                className="kanban-column"
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={(e) => handleDrop(e, col.status)}
-              >
+              <div key={col.status} className="kanban-column">
                 <div className="kanban-column-head">
                   {col.label} <span className="kanban-count">{cardsFor(col.status).length}</span>
                 </div>
                 <div className="kanban-cards">
                   {cardsFor(col.status).map((task: Task) => (
-                    <div
-                      key={task.id}
-                      className="kanban-card"
-                      draggable
-                      onDragStart={() => setDraggedTaskId(task.id)}
-                    >
+                    <div key={task.id} className="kanban-card">
                       <div className="kanban-card-title">{task.title}</div>
                       <div className="kanban-card-meta">
                         <span className={`pill priority-${task.priority.toLowerCase()}`}>{task.priority}</span>
                         {task.dueDateUtc && (
                           <span className="task-due">{new Date(task.dueDateUtc).toLocaleDateString(undefined, { month: "short", day: "numeric" })}</span>
                         )}
+                        {task.assignedToUserId && <span className="task-assignee">{memberName(task.assignedToUserId)}</span>}
                       </div>
+                      <select
+                        className="kanban-card-status"
+                        value={task.status}
+                        onChange={(e) => statusMutation.mutate({ id: task.id, status: e.target.value as TaskStatus })}
+                      >
+                        {COLUMNS.map((c) => (
+                          <option key={c.status} value={c.status}>{c.label}</option>
+                        ))}
+                      </select>
                     </div>
                   ))}
                 </div>

@@ -923,11 +923,20 @@ input, select {
   padding: 11px 13px;
   background: var(--panel);
   box-shadow: var(--shadow-sm);
-  cursor: grab;
 }
 
 .kanban-card-title { font-size: 13.5px; margin-bottom: 6px; }
-.kanban-card-meta { display: flex; gap: 6px; align-items: center; font-size: 11px; color: var(--text-soft); }
+.kanban-card-meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 11px; color: var(--text-soft); margin-bottom: 8px; }
+
+.kanban-card-status {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-s);
+  padding: 5px 8px;
+  background: var(--panel-soft);
+  color: var(--text);
+  font-size: 12px;
+}
 
 /* ---- calendar page ---- */
 .calendar-toolbar {
