@@ -2,6 +2,8 @@ import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { ApiError } from "../api/client";
+import AuthBackground from "../components/AuthBackground";
+import HomeOSLogo from "../components/HomeOSLogo";
 
 export default function Register() {
   const { register } = useAuth();
@@ -27,9 +29,9 @@ export default function Register() {
   }
 
   return (
-    <div className="auth-screen">
+    <AuthBackground>
       <form className="auth-card" onSubmit={handleSubmit}>
-        <h1>Home OS</h1>
+        <h1><HomeOSLogo size="lg" /></h1>
         <p className="dek">Create your account.</p>
 
         <label>
@@ -55,6 +57,6 @@ export default function Register() {
           Already have an account? <Link to="/login">Sign in</Link>
         </p>
       </form>
-    </div>
+    </AuthBackground>
   );
 }

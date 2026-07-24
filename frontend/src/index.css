@@ -207,6 +207,29 @@ button, input, select, textarea { font-family: inherit; }
   flex-shrink: 0;
 }
 
+/* ---- wordmark logo — "Home" plain, "OS" on a colour chip, YouTube-style ---- */
+.logo-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  white-space: nowrap;
+}
+.logo-os-badge {
+  background: var(--accent);
+  color: #fff;
+  border-radius: 7px;
+  padding: 1px 7px 2px;
+  font-weight: 800;
+}
+.logo-sm { font-size: 16px; }
+.logo-sm .logo-os-badge { border-radius: 5px; padding: 0 5px 1px; font-size: 0.82em; }
+.logo-md { font-size: 20px; }
+.logo-lg { font-size: 30px; letter-spacing: -0.02em; }
+.logo-lg .logo-os-badge { border-radius: 10px; padding: 2px 11px 4px; }
+
 .sidebar nav { display: flex; flex-direction: column; gap: 2px; }
 
 .nav-link {
@@ -502,6 +525,36 @@ h1 { font-size: 27px; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 6px
   align-items: center;
   justify-content: center;
   padding: 24px;
+}
+
+/* ---- Login/Register only: an interactive icon field that repels from
+   the cursor. Sits on its own opaque bg so the (much fainter) site-wide
+   doodle behind body::before doesn't show through and compete with it. ---- */
+.auth-screen-interactive {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.auth-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.auth-bg-icon {
+  position: absolute;
+  color: var(--accent);
+  opacity: .38;
+  transition: transform .15s ease-out;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.auth-screen-interactive .auth-card {
+  position: relative;
+  z-index: 1;
 }
 
 .auth-card {

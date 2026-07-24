@@ -10,6 +10,7 @@ import CommandPalette from "./CommandPalette";
 import InviteMemberModal from "./InviteMemberModal";
 import MembersModal from "./MembersModal";
 import Icon, { type IconName } from "./Icon";
+import HomeOSLogo from "./HomeOSLogo";
 
 const SIDEBAR_COLLAPSED_KEY = "homeos.sidebarCollapsed";
 
@@ -60,7 +61,7 @@ export default function Layout() {
       <aside className={`sidebar${mobileNavOpen ? " open" : ""}${collapsed ? " collapsed" : ""}`}>
         <div className="brand">
           <span className="brand-mark"><Icon name="home" size={15} /></span>
-          <span className="brand-text">Home OS</span>
+          <span className="brand-text"><HomeOSLogo size="sm" /></span>
           <button
             type="button"
             className="sidebar-toggle"

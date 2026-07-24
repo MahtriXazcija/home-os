@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 import { apiPost, ApiError } from "../api/client";
+import HomeOSLogo from "../components/HomeOSLogo";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -25,7 +26,7 @@ export default function ForgotPassword() {
   return (
     <div className="auth-screen">
       <form className="auth-card" onSubmit={handleSubmit}>
-        <h1>Home OS</h1>
+        <h1><HomeOSLogo size="lg" /></h1>
         <p className="dek">Reset your password.</p>
 
         {sent ? (

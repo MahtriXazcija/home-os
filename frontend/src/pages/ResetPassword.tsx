@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { apiPost, ApiError } from "../api/client";
+import HomeOSLogo from "../components/HomeOSLogo";
 
 export default function ResetPassword() {
   const navigate = useNavigate();
@@ -43,7 +44,7 @@ export default function ResetPassword() {
     return (
       <div className="auth-screen">
         <div className="auth-card">
-          <h1>Home OS</h1>
+          <h1><HomeOSLogo size="lg" /></h1>
           <p className="auth-error">This reset link is missing information — request a new one.</p>
           <p className="auth-switch"><Link to="/forgot-password">Request a new link</Link></p>
         </div>
