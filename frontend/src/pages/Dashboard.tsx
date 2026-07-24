@@ -6,6 +6,7 @@ import { getTasks } from "../api/tasks";
 import { getCalendar } from "../api/calendar";
 import { getMyReminders } from "../api/reminders";
 import { getBills } from "../api/finance";
+import Icon from "../components/Icon";
 
 function startOfDay(d: Date) {
   return new Date(d.getFullYear(), d.getMonth(), d.getDate());
@@ -62,7 +63,10 @@ export default function Dashboard() {
 
       <div className="card-grid">
         <section className="card">
-          <h2>Tasks due</h2>
+          <div className="card-title-row">
+            <span className="app-icon app-icon-tasks"><Icon name="check-square" /></span>
+            <h2>Tasks due</h2>
+          </div>
           {overdue.length === 0 && upcoming.length === 0 && <p className="empty">Nothing due — you're clear.</p>}
           {overdue.length > 0 && (
             <ul className="dashboard-list">
@@ -82,7 +86,10 @@ export default function Dashboard() {
         </section>
 
         <section className="card">
-          <h2>Today's events</h2>
+          <div className="card-title-row">
+            <span className="app-icon app-icon-calendar"><Icon name="calendar" /></span>
+            <h2>Today's events</h2>
+          </div>
           {todayEvents.length === 0 && <p className="empty">Nothing on the calendar today.</p>}
           {todayEvents.length > 0 && (
             <ul className="dashboard-list">
@@ -95,7 +102,10 @@ export default function Dashboard() {
         </section>
 
         <section className="card">
-          <h2>Upcoming bills</h2>
+          <div className="card-title-row">
+            <span className="app-icon app-icon-finance"><Icon name="dollar-sign" /></span>
+            <h2>Upcoming bills</h2>
+          </div>
           {upcomingBills.length === 0 && <p className="empty">Nothing due.</p>}
           {upcomingBills.length > 0 && (
             <ul className="dashboard-list">
@@ -107,7 +117,10 @@ export default function Dashboard() {
           <Link className="card-link" to="/finance">Open finance →</Link>
         </section>
         <section className="card">
-          <h2>Active reminders</h2>
+          <div className="card-title-row">
+            <span className="app-icon app-icon-reminders"><Icon name="bell" /></span>
+            <h2>Active reminders</h2>
+          </div>
           {upcomingReminders.length === 0 && <p className="empty">Nothing scheduled.</p>}
           {upcomingReminders.length > 0 && (
             <ul className="dashboard-list">

@@ -6,6 +6,7 @@ import { useAuth } from "../auth/AuthContext";
 import { useApps } from "../hooks/useApps";
 import NotificationBell from "./NotificationBell";
 import CommandPalette from "./CommandPalette";
+import Icon, { type IconName } from "./Icon";
 
 export default function Layout() {
   const { user, logout } = useAuth();
@@ -58,7 +59,10 @@ export default function Layout() {
     <div className="app-shell">
       <div className={`sidebar-backdrop${mobileNavOpen ? " open" : ""}`} onClick={() => setMobileNavOpen(false)} />
       <aside className={`sidebar${mobileNavOpen ? " open" : ""}`}>
-        <div className="brand">Home OS</div>
+        <div className="brand">
+          <span className="brand-mark"><Icon name="home" size={15} /></span>
+          Home OS
+        </div>
         <nav>
           {installedApps.map((app) => (
             <NavLink
@@ -67,10 +71,12 @@ export default function Layout() {
               end={app.navRoute === "/"}
               className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
             >
+              <span className={`app-icon app-icon-${app.id}`}><Icon name={app.icon as IconName} /></span>
               {app.navLabel}
             </NavLink>
           ))}
           <NavLink to="/apps" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
+            <span className="app-icon app-icon-apps"><Icon name="grid" /></span>
             Manage apps
           </NavLink>
         </nav>
@@ -81,6 +87,7 @@ export default function Layout() {
               <div className="household-name">{household.name}</div>
               <div className="household-members">{household.members.length} member{household.members.length === 1 ? "" : "s"}</div>
               <button type="button" className="link-button" onClick={handleInvite} disabled={isInviting}>
+                <Icon name="mail" size={13} />
                 {isInviting ? "Inviting…" : "Invite a member"}
               </button>
               {inviteLink && <p className="invite-link-hint">Invite sent by email, and the link is copied to your clipboard too.</p>}
@@ -88,7 +95,10 @@ export default function Layout() {
           )}
           <div className="user-info">
             <span>{user?.displayName}</span>
-            <button type="button" className="link-button" onClick={logout}>Sign out</button>
+            <button type="button" className="link-button" onClick={logout}>
+              <Icon name="log-out" size={13} />
+              Sign out
+            </button>
           </div>
         </div>
       </aside>
@@ -100,14 +110,17 @@ export default function Layout() {
             onClick={() => setMobileNavOpen(true)}
             aria-label="Open menu"
           >
-            ☰
+            <Icon name="menu" size={18} />
           </button>
-          <input
-            className="quick-capture"
-            placeholder="Search or jump to… (⌘K)"
-            onFocus={() => setPaletteOpen(true)}
-            readOnly
-          />
+          <div className="quick-capture-wrap">
+            <Icon name="search" size={15} className="search-icon" />
+            <input
+              className="quick-capture"
+              placeholder="Search or jump to… (⌘K)"
+              onFocus={() => setPaletteOpen(true)}
+              readOnly
+            />
+          </div>
           <NotificationBell />
         </header>
         <main className="content">

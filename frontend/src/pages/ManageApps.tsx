@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useApps } from "../hooks/useApps";
 import { installApp, uninstallApp } from "../api/apps";
+import Icon, { type IconName } from "../components/Icon";
 
 export default function ManageApps() {
   const { data: apps, householdId } = useApps();
@@ -29,7 +30,10 @@ export default function ManageApps() {
         {(apps ?? []).map((app) => (
           <div key={app.id} className="app-card">
             <div className="app-card-head">
-              <span className="app-card-name">{app.name}</span>
+              <div className="app-card-title">
+                <span className={`app-icon app-icon-lg app-icon-${app.id}`}><Icon name={app.icon as IconName} /></span>
+                <span className="app-card-name">{app.name}</span>
+              </div>
               {app.isCore ? (
                 <span className="pill priority-low">Core</span>
               ) : app.isInstalled ? (

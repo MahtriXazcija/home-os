@@ -7,6 +7,7 @@ import {
   setNotificationPreference,
   type NotificationCategory,
 } from "../api/notifications";
+import Icon from "./Icon";
 
 const CATEGORY_LABELS: Record<NotificationCategory, string> = {
   ReminderFired: "Reminders",
@@ -58,7 +59,8 @@ export default function NotificationBell() {
   return (
     <div className="notification-bell">
       <button type="button" className="bell-button" onClick={() => setOpen(!open)}>
-        🔔 {unreadCount > 0 && <span className="bell-badge">{unreadCount}</span>}
+        <Icon name="bell" size={17} />
+        {unreadCount > 0 && <span className="bell-badge">{unreadCount}</span>}
       </button>
 
       {open && (
