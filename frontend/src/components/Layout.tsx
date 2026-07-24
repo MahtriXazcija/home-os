@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getMyHousehold, inviteMember } from "../api/household";
+import { getMyHousehold } from "../api/household";
 import { useAuth } from "../auth/AuthContext";
 import { useApps } from "../hooks/useApps";
 import NotificationBell from "./NotificationBell";
 import CommandPalette from "./CommandPalette";
+import InviteMemberModal from "./InviteMemberModal";
 import Icon, { type IconName } from "./Icon";
 
 export default function Layout() {
   const { user, logout } = useAuth();
   const { data: household } = useQuery({ queryKey: ["my-household"], queryFn: getMyHousehold });
   const { data: apps } = useApps();
-  const [inviteLink, setInviteLink] = useState<string | null>(null);
-  const [isInviting, setIsInviting] = useState(false);
+  const [inviteOpen, setInviteOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const location = useLocation();
@@ -33,23 +33,6 @@ export default function Layout() {
   useEffect(() => {
     setMobileNavOpen(false);
   }, [location.pathname]);
-
-  async function handleInvite() {
-    if (!household) return;
-    const email = window.prompt("Invite by email:");
-    if (!email) return;
-    setIsInviting(true);
-    try {
-      const invitation = await inviteMember(household.id, email);
-      const link = `${window.location.origin}/onboarding?token=${invitation.token}`;
-      setInviteLink(link);
-      await navigator.clipboard.writeText(link).catch(() => {});
-    } catch (err) {
-      window.alert(err instanceof Error ? err.message : "Could not create invite.");
-    } finally {
-      setIsInviting(false);
-    }
-  }
 
   // Nav is driven by which apps are installed — this is the same registry
   // a third-party app would register into, not a hardcoded list per app.
@@ -96,11 +79,10 @@ export default function Layout() {
                 {household.members.length} member{household.members.length === 1 ? "" : "s"}
                 {myRoleLabel && <span className="pill role-pill-inline">{myRoleLabel}</span>}
               </div>
-              <button type="button" className="link-button" onClick={handleInvite} disabled={isInviting}>
+              <button type="button" className="link-button" onClick={() => setInviteOpen(true)}>
                 <Icon name="mail" size={13} />
-                {isInviting ? "Inviting…" : "Invite a member"}
+                Invite a member
               </button>
-              {inviteLink && <p className="invite-link-hint">Invite sent by email, and the link is copied to your clipboard too.</p>}
             </div>
           )}
           <div className="user-info">
@@ -138,6 +120,9 @@ export default function Layout() {
         </main>
       </div>
       <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
+      {household && (
+        <InviteMemberModal open={inviteOpen} householdId={household.id} onClose={() => setInviteOpen(false)} />
+      )}
     </div>
   );
 }

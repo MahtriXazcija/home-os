@@ -59,7 +59,8 @@ if (!string.IsNullOrWhiteSpace(connectionString))
     builder.Services
         .AddIdentityCore<AppUser>(options => options.SignIn.RequireConfirmedAccount = false)
         .AddRoles<IdentityRole<Guid>>()
-        .AddEntityFrameworkStores<HomeOsDbContext>();
+        .AddEntityFrameworkStores<HomeOsDbContext>()
+        .AddDefaultTokenProviders();
 
     builder.Services.AddScoped<IHouseholdRepository, HouseholdRepository>();
     builder.Services.AddScoped<IAppDbContext>(sp => sp.GetRequiredService<HomeOsDbContext>());

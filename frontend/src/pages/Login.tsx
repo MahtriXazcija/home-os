@@ -1,11 +1,13 @@
 import { useState, type FormEvent } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { ApiError } from "../api/client";
 
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const justReset = Boolean((location.state as { passwordReset?: boolean } | null)?.passwordReset);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -31,6 +33,8 @@ export default function Login() {
         <h1>Home OS</h1>
         <p className="dek">Sign in to your household.</p>
 
+        {justReset && <p className="profile-saved">Password updated — sign in with your new password.</p>}
+
         <label>
           Email
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoFocus />
@@ -41,6 +45,10 @@ export default function Login() {
         </label>
 
         {error && <p className="auth-error">{error}</p>}
+
+        <div className="auth-links-row">
+          <Link to="/forgot-password" className="link-button">Forgot password?</Link>
+        </div>
 
         <button type="submit" disabled={isSubmitting}>
           {isSubmitting ? "Signing in…" : "Sign in"}

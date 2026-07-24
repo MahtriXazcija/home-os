@@ -17,12 +17,16 @@ import ManageApps from "./pages/ManageApps";
 import MealPlanner from "./pages/MealPlanner";
 import Chat from "./pages/Chat";
 import Profile from "./pages/Profile";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 export default function App() {
   return (
     <Routes>
       <Route path="login" element={<Login />} />
       <Route path="register" element={<Register />} />
+      <Route path="forgot-password" element={<ForgotPassword />} />
+      <Route path="reset-password" element={<ResetPassword />} />
 
       <Route element={<RequireAuth />}>
         <Route path="onboarding" element={<Onboarding />} />

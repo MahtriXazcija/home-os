@@ -105,7 +105,9 @@ body::before {
   background:
     radial-gradient(560px circle at 8% -8%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 60%),
     radial-gradient(520px circle at 105% 0%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 55%),
-    radial-gradient(620px circle at 50% 115%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 60%);
+    radial-gradient(620px circle at 50% 115%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 60%),
+    radial-gradient(circle, color-mix(in srgb, var(--accent) 7%, transparent) 1px, transparent 1.4px);
+  background-size: auto, auto, auto, 26px 26px;
 }
 
 #root { position: relative; z-index: 1; }
@@ -451,6 +453,9 @@ h1 { font-size: 27px; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 6px
   margin: 0;
   text-align: center;
 }
+
+.auth-links-row { display: flex; justify-content: flex-end; margin-top: -6px; }
+.auth-links-row .link-button { text-decoration: none; }
 
 .onboarding-stack {
   width: 100%;
@@ -974,6 +979,73 @@ input, select {
 .palette-item-meta { font-size: 11px; color: var(--text-faint); text-transform: uppercase; }
 
 .palette-empty { padding: 8px 10px; font-size: 13px; color: var(--text-faint); }
+
+/* ---- generic modal (e.g. invite a member) ---- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-l);
+  box-shadow: var(--shadow-lg);
+  padding: 24px;
+}
+
+.modal-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.modal-head h2 { margin: 0; font-size: 17px; }
+
+.modal-card label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13.5px;
+  color: var(--text-soft);
+  margin-bottom: 4px;
+}
+.modal-card input {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-s);
+  padding: 10px 13px;
+  font-size: 14.5px;
+  background: var(--panel-soft);
+  color: var(--text);
+}
+
+.modal-actions { display: flex; align-items: center; justify-content: flex-end; gap: 14px; margin-top: 18px; }
+.modal-actions button[type="submit"], .modal-actions button:not(.modal-cancel) {
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 9px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+}
+.modal-actions button:disabled { opacity: .5; cursor: default; }
+
+.invite-link-box {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--text-soft);
+  background: var(--panel-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-s);
+  padding: 10px 12px;
+  word-break: break-all;
+}
 
 /* ---- manage apps ---- */
 .app-grid {
