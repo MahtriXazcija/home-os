@@ -9,6 +9,7 @@ using HomeOS.Infrastructure.Email;
 using HomeOS.Infrastructure.Identity;
 using HomeOS.Infrastructure.Persistence;
 using HomeOS.Infrastructure.Reminders;
+using HomeOS.Infrastructure.Web;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -67,6 +68,12 @@ if (!string.IsNullOrWhiteSpace(connectionString))
 
     builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection(EmailOptions.SectionName));
     builder.Services.AddHttpClient<IEmailSender, BrevoEmailSender>();
+
+    // Base URL used to build clickable invite links in emails. Defaults to
+    // the production Vercel URL; override via "Frontend:BaseUrl" for other
+    // environments (e.g. local dev against http://localhost:5173).
+    builder.Services.Configure<FrontendOptions>(builder.Configuration.GetSection(FrontendOptions.SectionName));
+    builder.Services.AddScoped<IFrontendLinkBuilder, FrontendLinkBuilder>();
 
     builder.Services.AddHostedService<ReminderSchedulerService>();
 

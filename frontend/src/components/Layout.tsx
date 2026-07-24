@@ -83,7 +83,7 @@ export default function Layout() {
               <button type="button" className="link-button" onClick={handleInvite} disabled={isInviting}>
                 {isInviting ? "Inviting…" : "Invite a member"}
               </button>
-              {inviteLink && <p className="invite-link-hint">Link copied — share it manually (invites aren't emailed yet).</p>}
+              {inviteLink && <p className="invite-link-hint">Invite sent by email, and the link is copied to your clipboard too.</p>}
             </div>
           )}
           <div className="user-info">
