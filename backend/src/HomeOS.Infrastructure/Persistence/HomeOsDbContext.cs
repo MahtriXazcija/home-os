@@ -40,6 +40,7 @@ public class HomeOsDbContext(DbContextOptions<HomeOsDbContext> options, IPublish
     public DbSet<AppInstallation> AppInstallations => Set<AppInstallation>();
     public DbSet<MealPlanEntry> MealPlanEntries => Set<MealPlanEntry>();
     public DbSet<ChatMessage> ChatMessages => Set<ChatMessage>();
+    public DbSet<ChatReadState> ChatReadStates => Set<ChatReadState>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -204,6 +205,12 @@ public class HomeOsDbContext(DbContextOptions<HomeOsDbContext> options, IPublish
             entity.ToTable("ChatMessages");
             entity.Property(m => m.Content).HasMaxLength(2000).IsRequired();
             entity.HasIndex(m => new { m.HouseholdId, m.CreatedAtUtc });
+        });
+
+        builder.Entity<ChatReadState>(entity =>
+        {
+            entity.ToTable("ChatReadStates");
+            entity.HasIndex(r => new { r.HouseholdId, r.UserId }).IsUnique();
         });
     }
 

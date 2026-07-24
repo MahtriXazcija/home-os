@@ -21,7 +21,11 @@ export type IconName =
   | "user"
   | "message-circle"
   | "camera"
-  | "shield";
+  | "shield"
+  | "chevrons-left"
+  | "chevrons-right"
+  | "check"
+  | "check-check";
 
 const paths: Record<IconName, ReactElement> = {
   home: (
@@ -159,6 +163,29 @@ const paths: Record<IconName, ReactElement> = {
     <>
       <path d="M12 3l7 3v5c0 4.8-3 8.5-7 10-4-1.5-7-5.2-7-10V6l7-3Z" />
       <path d="m9 12 2 2 4-4" />
+    </>
+  ),
+  "chevrons-left": (
+    <>
+      <polyline points="15 6 9 12 15 18" />
+      <polyline points="20 6 14 12 20 18" />
+    </>
+  ),
+  "chevrons-right": (
+    <>
+      <polyline points="9 6 15 12 9 18" />
+      <polyline points="4 6 10 12 4 18" />
+    </>
+  ),
+  check: (
+    <>
+      <polyline points="4 12 9 17 20 6" />
+    </>
+  ),
+  "check-check": (
+    <>
+      <polyline points="2 12 7 17 14 9" />
+      <polyline points="8 12 13 17 22 6" />
     </>
   ),
 };

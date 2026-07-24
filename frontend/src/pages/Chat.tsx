@@ -2,7 +2,8 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useHousehold } from "../hooks/useHousehold";
 import { useAuth } from "../auth/AuthContext";
-import { getChatMessages, sendChatMessage } from "../api/chat";
+import { getChatMessages, getChatReadStates, markChatRead, sendChatMessage } from "../api/chat";
+import Icon from "../components/Icon";
 
 function timeLabel(iso: string) {
   return new Date(iso).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
@@ -22,6 +23,26 @@ export default function Chat() {
     enabled: !!householdId,
     refetchInterval: 4000,
   });
+
+  const { data: readStates } = useQuery({
+    queryKey: ["chat-read-state", householdId],
+    queryFn: () => getChatReadStates(householdId),
+    enabled: !!householdId,
+    refetchInterval: 4000,
+  });
+
+  const markReadMutation = useMutation({
+    mutationFn: () => markChatRead(householdId),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["chat-read-state", householdId] }),
+  });
+
+  // Mark read on open, and again whenever a new message arrives while the
+  // page is open — this is what lets other members' "seen by" catch up.
+  useEffect(() => {
+    if (householdId && messages && messages.length > 0) {
+      markReadMutation.mutate();
+    }
+  }, [householdId, messages?.length]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
@@ -45,6 +66,13 @@ export default function Chat() {
   const nameFor = (userId: string) =>
     household?.members.find((m) => m.userId === userId)?.displayName ?? "Member";
 
+  function seenByFor(message: { senderUserId: string; createdAtUtc: string }): string[] {
+    const messageTime = new Date(message.createdAtUtc).getTime();
+    return (readStates ?? [])
+      .filter((r) => r.userId !== message.senderUserId && new Date(r.lastReadAtUtc).getTime() >= messageTime)
+      .map((r) => nameFor(r.userId));
+  }
+
   return (
     <div>
       <h1>Chat</h1>
@@ -55,11 +83,27 @@ export default function Chat() {
           {(messages ?? []).length === 0 && <p className="empty">No messages yet — say hello.</p>}
           {(messages ?? []).map((m) => {
             const isOwn = m.senderUserId === user?.userId;
+            const seenBy = isOwn ? seenByFor(m) : [];
             return (
               <div key={m.id} className={`chat-message${isOwn ? " own" : ""}`}>
                 {!isOwn && <div className="chat-message-sender">{nameFor(m.senderUserId)}</div>}
                 <div className="chat-bubble">{m.content}</div>
                 <div className="chat-message-time">{timeLabel(m.createdAtUtc)}</div>
+                {isOwn && (
+                  <div className="chat-receipt">
+                    {seenBy.length > 0 ? (
+                      <>
+                        <Icon name="check-check" size={12} />
+                        Seen by {seenBy.join(", ")}
+                      </>
+                    ) : (
+                      <>
+                        <Icon name="check" size={12} />
+                        Delivered
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
             );
           })}

@@ -37,6 +37,7 @@ public interface IAppDbContext
     DbSet<AppInstallation> AppInstallations { get; }
     DbSet<MealPlanEntry> MealPlanEntries { get; }
     DbSet<ChatMessage> ChatMessages { get; }
+    DbSet<ChatReadState> ChatReadStates { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }
