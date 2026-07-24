@@ -31,7 +31,7 @@ export default function ManageApps() {
           <div key={app.id} className="app-card">
             <div className="app-card-head">
               <div className="app-card-title">
-                <span className={`app-icon app-icon-lg app-icon-${app.id}`}><Icon name={app.icon as IconName} /></span>
+                <span className="app-icon app-icon-lg"><Icon name={app.icon as IconName} /></span>
                 <span className="app-card-name">{app.name}</span>
               </div>
               {app.isCore ? (

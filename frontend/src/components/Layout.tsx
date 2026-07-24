@@ -55,6 +55,9 @@ export default function Layout() {
   // a third-party app would register into, not a hardcoded list per app.
   const installedApps = (apps ?? []).filter((a) => a.isInstalled);
 
+  const myRole = household?.members.find((m) => m.userId === user?.userId)?.role;
+  const myRoleLabel = myRole === "Owner" ? "Administrator" : myRole === "Member" ? "Member" : null;
+
   return (
     <div className="app-shell">
       <div className={`sidebar-backdrop${mobileNavOpen ? " open" : ""}`} onClick={() => setMobileNavOpen(false)} />
@@ -71,13 +74,17 @@ export default function Layout() {
               end={app.navRoute === "/"}
               className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
             >
-              <span className={`app-icon app-icon-${app.id}`}><Icon name={app.icon as IconName} /></span>
+              <span className="app-icon"><Icon name={app.icon as IconName} /></span>
               {app.navLabel}
             </NavLink>
           ))}
           <NavLink to="/apps" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
-            <span className="app-icon app-icon-apps"><Icon name="grid" /></span>
+            <span className="app-icon"><Icon name="grid" /></span>
             Manage apps
+          </NavLink>
+          <NavLink to="/profile" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
+            <span className="app-icon"><Icon name="user" /></span>
+            Profile
           </NavLink>
         </nav>
 
@@ -85,7 +92,10 @@ export default function Layout() {
           {household && (
             <div className="household-info">
               <div className="household-name">{household.name}</div>
-              <div className="household-members">{household.members.length} member{household.members.length === 1 ? "" : "s"}</div>
+              <div className="household-members">
+                {household.members.length} member{household.members.length === 1 ? "" : "s"}
+                {myRoleLabel && <span className="pill role-pill-inline">{myRoleLabel}</span>}
+              </div>
               <button type="button" className="link-button" onClick={handleInvite} disabled={isInviting}>
                 <Icon name="mail" size={13} />
                 {isInviting ? "Inviting…" : "Invite a member"}

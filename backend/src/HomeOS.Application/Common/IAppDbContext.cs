@@ -1,6 +1,7 @@
 using HomeOS.Domain.Apps;
 using HomeOS.Domain.Boards;
 using HomeOS.Domain.Calendar;
+using HomeOS.Domain.Chat;
 using HomeOS.Domain.Finance;
 using HomeOS.Domain.LifeAdmin;
 using HomeOS.Domain.MealPlanner;
@@ -35,6 +36,7 @@ public interface IAppDbContext
     DbSet<ShoppingItem> ShoppingItems { get; }
     DbSet<AppInstallation> AppInstallations { get; }
     DbSet<MealPlanEntry> MealPlanEntries { get; }
+    DbSet<ChatMessage> ChatMessages { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

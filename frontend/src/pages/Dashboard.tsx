@@ -64,7 +64,7 @@ export default function Dashboard() {
       <div className="card-grid">
         <section className="card">
           <div className="card-title-row">
-            <span className="app-icon app-icon-tasks"><Icon name="check-square" /></span>
+            <span className="app-icon"><Icon name="check-square" /></span>
             <h2>Tasks due</h2>
           </div>
           {overdue.length === 0 && upcoming.length === 0 && <p className="empty">Nothing due — you're clear.</p>}
@@ -87,7 +87,7 @@ export default function Dashboard() {
 
         <section className="card">
           <div className="card-title-row">
-            <span className="app-icon app-icon-calendar"><Icon name="calendar" /></span>
+            <span className="app-icon"><Icon name="calendar" /></span>
             <h2>Today's events</h2>
           </div>
           {todayEvents.length === 0 && <p className="empty">Nothing on the calendar today.</p>}
@@ -103,7 +103,7 @@ export default function Dashboard() {
 
         <section className="card">
           <div className="card-title-row">
-            <span className="app-icon app-icon-finance"><Icon name="dollar-sign" /></span>
+            <span className="app-icon"><Icon name="dollar-sign" /></span>
             <h2>Upcoming bills</h2>
           </div>
           {upcomingBills.length === 0 && <p className="empty">Nothing due.</p>}
@@ -118,7 +118,7 @@ export default function Dashboard() {
         </section>
         <section className="card">
           <div className="card-title-row">
-            <span className="app-icon app-icon-reminders"><Icon name="bell" /></span>
+            <span className="app-icon"><Icon name="bell" /></span>
             <h2>Active reminders</h2>
           </div>
           {upcomingReminders.length === 0 && <p className="empty">Nothing scheduled.</p>}

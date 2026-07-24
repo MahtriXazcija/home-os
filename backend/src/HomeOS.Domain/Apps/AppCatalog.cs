@@ -54,6 +54,10 @@ public static class AppCatalog
         new("meal-planner", "Meal Planner", "utensils", "Plan meals for the week and turn one into a shopping task.",
             false, ["tasks:create", "calendar:read"], ["mealplanner.meal.planned"], [],
             new AppUiManifest("Meal Planner", "/meal-planner", ["add-meal"], true)),
+
+        new("chat", "Chat", "message-circle", "A group chat visible only to members of this household.",
+            false, ["chat:read", "chat:write", "members:read"], ["chat.message.sent"], [],
+            new AppUiManifest("Chat", "/chat", [], false)),
     ];
 
     public static AppManifest? Find(string id) => All.FirstOrDefault(a => a.Id == id);

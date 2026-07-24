@@ -2,6 +2,7 @@ using HomeOS.Application.Common;
 using HomeOS.Domain.Apps;
 using HomeOS.Domain.Boards;
 using HomeOS.Domain.Calendar;
+using HomeOS.Domain.Chat;
 using HomeOS.Domain.Common;
 using HomeOS.Domain.Finance;
 using HomeOS.Domain.Households;
@@ -38,10 +39,17 @@ public class HomeOsDbContext(DbContextOptions<HomeOsDbContext> options, IPublish
     public DbSet<ShoppingItem> ShoppingItems => Set<ShoppingItem>();
     public DbSet<AppInstallation> AppInstallations => Set<AppInstallation>();
     public DbSet<MealPlanEntry> MealPlanEntries => Set<MealPlanEntry>();
+    public DbSet<ChatMessage> ChatMessages => Set<ChatMessage>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
+        builder.Entity<AppUser>(entity =>
+        {
+            entity.Property(u => u.DisplayName).HasMaxLength(200);
+            entity.Property(u => u.PhotoDataUrl).HasColumnType("text");
+        });
 
         builder.Entity<Household>(entity =>
         {
@@ -189,6 +197,13 @@ public class HomeOsDbContext(DbContextOptions<HomeOsDbContext> options, IPublish
             entity.ToTable("MealPlanEntries");
             entity.Property(m => m.Title).HasMaxLength(200).IsRequired();
             entity.HasIndex(m => new { m.HouseholdId, m.MealDate });
+        });
+
+        builder.Entity<ChatMessage>(entity =>
+        {
+            entity.ToTable("ChatMessages");
+            entity.Property(m => m.Content).HasMaxLength(2000).IsRequired();
+            entity.HasIndex(m => new { m.HouseholdId, m.CreatedAtUtc });
         });
     }
 

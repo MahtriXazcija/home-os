@@ -17,7 +17,11 @@ export type IconName =
   | "mail"
   | "plus"
   | "sparkles"
-  | "users";
+  | "users"
+  | "user"
+  | "message-circle"
+  | "camera"
+  | "shield";
 
 const paths: Record<IconName, ReactElement> = {
   home: (
@@ -132,6 +136,29 @@ const paths: Record<IconName, ReactElement> = {
       <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" />
       <path d="M16 4.5a3.2 3.2 0 0 1 0 6.4" />
       <path d="M21 20c0-2.8-1.9-5.1-4.5-5.8" />
+    </>
+  ),
+  user: (
+    <>
+      <circle cx="12" cy="8" r="3.5" />
+      <path d="M4.5 20c0-3.6 3.4-6.5 7.5-6.5s7.5 2.9 7.5 6.5" />
+    </>
+  ),
+  "message-circle": (
+    <>
+      <path d="M21 11.5a8.5 8.5 0 0 1-11.9 7.8L3 21l1.7-6.1A8.5 8.5 0 1 1 21 11.5Z" />
+    </>
+  ),
+  camera: (
+    <>
+      <path d="M4 8h3l1.5-2.5h7L17 8h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z" />
+      <circle cx="12" cy="14" r="3.5" />
+    </>
+  ),
+  shield: (
+    <>
+      <path d="M12 3l7 3v5c0 4.8-3 8.5-7 10-4-1.5-7-5.2-7-10V6l7-3Z" />
+      <path d="m9 12 2 2 4-4" />
     </>
   ),
 };

@@ -15,6 +15,8 @@ import Finance from "./pages/Finance";
 import LifeAdmin from "./pages/LifeAdmin";
 import ManageApps from "./pages/ManageApps";
 import MealPlanner from "./pages/MealPlanner";
+import Chat from "./pages/Chat";
+import Profile from "./pages/Profile";
 
 export default function App() {
   return (
@@ -37,6 +39,8 @@ export default function App() {
             <Route path="life-admin" element={<LifeAdmin />} />
             <Route path="apps" element={<ManageApps />} />
             <Route path="meal-planner" element={<MealPlanner />} />
+            <Route path="chat" element={<Chat />} />
+            <Route path="profile" element={<Profile />} />
           </Route>
         </Route>
       </Route>
