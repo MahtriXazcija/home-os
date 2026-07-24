@@ -43,6 +43,17 @@ public static class AppCatalog
         new("life-admin", "Life Admin", "archive", "Household documents, contacts, and the shared shopping list.",
             false, ["documents:write", "contacts:write", "reminders:create"], ["document.renewalDue"], [],
             new AppUiManifest("Life Admin", "/life-admin", ["add-document", "add-shopping-item"], true)),
+
+        // The proof-of-concept third-party app (docs/app-sdk.md "Guidance for
+        // an agent building a new app"). Adding it here is the only change
+        // this file needed — nav, dashboard eligibility, command palette, and
+        // search all pick it up automatically once installed. It asks for
+        // tasks:create instead of building its own task system, exactly the
+        // app-sdk.md example: "a meal-planner shouldn't invent its own task
+        // system — it should use the existing one."
+        new("meal-planner", "Meal Planner", "utensils", "Plan meals for the week and turn one into a shopping task.",
+            false, ["tasks:create", "calendar:read"], ["mealplanner.meal.planned"], [],
+            new AppUiManifest("Meal Planner", "/meal-planner", ["add-meal"], true)),
     ];
 
     public static AppManifest? Find(string id) => All.FirstOrDefault(a => a.Id == id);

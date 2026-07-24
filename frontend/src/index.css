@@ -809,3 +809,42 @@ input, select {
 .app-card-permissions { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
 .tag-granted { border-color: var(--good); color: var(--good); }
 .app-card-events { font-size: 11px; color: var(--text-faint); font-family: var(--font-mono); margin-top: 4px; }
+
+/* ---- meal planner ---- */
+.meal-grid {
+  display: grid;
+  grid-template-columns: 90px repeat(7, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.meal-grid-corner { background: var(--sheet, var(--panel)); }
+.meal-grid-day, .meal-grid-type {
+  background: var(--bg);
+  padding: 8px 10px;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  color: var(--text-soft);
+}
+.meal-grid-cell {
+  background: var(--panel);
+  min-height: 56px;
+  padding: 6px;
+}
+
+.meal-grid-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  font-size: 12px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 5px;
+  padding: 4px 6px;
+}

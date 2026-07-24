@@ -6,6 +6,7 @@ using HomeOS.Domain.Common;
 using HomeOS.Domain.Finance;
 using HomeOS.Domain.Households;
 using HomeOS.Domain.LifeAdmin;
+using HomeOS.Domain.MealPlanner;
 using HomeOS.Domain.Notes;
 using HomeOS.Domain.Notifications;
 using HomeOS.Domain.Reminders;
@@ -36,6 +37,7 @@ public class HomeOsDbContext(DbContextOptions<HomeOsDbContext> options, IPublish
     public DbSet<Contact> Contacts => Set<Contact>();
     public DbSet<ShoppingItem> ShoppingItems => Set<ShoppingItem>();
     public DbSet<AppInstallation> AppInstallations => Set<AppInstallation>();
+    public DbSet<MealPlanEntry> MealPlanEntries => Set<MealPlanEntry>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -180,6 +182,13 @@ public class HomeOsDbContext(DbContextOptions<HomeOsDbContext> options, IPublish
             entity.ToTable("AppInstallations");
             entity.Property(a => a.AppId).HasMaxLength(100).IsRequired();
             entity.HasIndex(a => new { a.HouseholdId, a.AppId }).IsUnique();
+        });
+
+        builder.Entity<MealPlanEntry>(entity =>
+        {
+            entity.ToTable("MealPlanEntries");
+            entity.Property(m => m.Title).HasMaxLength(200).IsRequired();
+            entity.HasIndex(m => new { m.HouseholdId, m.MealDate });
         });
     }
 

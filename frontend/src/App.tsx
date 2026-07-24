@@ -14,6 +14,7 @@ import Notes from "./pages/Notes";
 import Finance from "./pages/Finance";
 import LifeAdmin from "./pages/LifeAdmin";
 import ManageApps from "./pages/ManageApps";
+import MealPlanner from "./pages/MealPlanner";
 
 export default function App() {
   return (
@@ -35,6 +36,7 @@ export default function App() {
             <Route path="finance" element={<Finance />} />
             <Route path="life-admin" element={<LifeAdmin />} />
             <Route path="apps" element={<ManageApps />} />
+            <Route path="meal-planner" element={<MealPlanner />} />
           </Route>
         </Route>
       </Route>

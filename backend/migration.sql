@@ -674,5 +674,36 @@ BEGIN
     VALUES ('20260724053450_AddAppInstallations', '9.0.9');
     END IF;
 END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724055053_AddMealPlanner') THEN
+    CREATE TABLE "MealPlanEntries" (
+        "Id" uuid NOT NULL,
+        "HouseholdId" uuid NOT NULL,
+        "MealDate" date NOT NULL,
+        "MealType" integer NOT NULL,
+        "Title" character varying(200) NOT NULL,
+        "CreatedByUserId" uuid NOT NULL,
+        "CreatedAtUtc" timestamp with time zone NOT NULL,
+        CONSTRAINT "PK_MealPlanEntries" PRIMARY KEY ("Id")
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724055053_AddMealPlanner') THEN
+    CREATE INDEX "IX_MealPlanEntries_HouseholdId_MealDate" ON "MealPlanEntries" ("HouseholdId", "MealDate");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724055053_AddMealPlanner') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260724055053_AddMealPlanner', '9.0.9');
+    END IF;
+END $EF$;
 COMMIT;
 

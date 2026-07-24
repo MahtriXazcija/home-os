@@ -3,6 +3,7 @@ using HomeOS.Domain.Boards;
 using HomeOS.Domain.Calendar;
 using HomeOS.Domain.Finance;
 using HomeOS.Domain.LifeAdmin;
+using HomeOS.Domain.MealPlanner;
 using HomeOS.Domain.Notes;
 using HomeOS.Domain.Notifications;
 using HomeOS.Domain.Reminders;
@@ -33,6 +34,7 @@ public interface IAppDbContext
     DbSet<Contact> Contacts { get; }
     DbSet<ShoppingItem> ShoppingItems { get; }
     DbSet<AppInstallation> AppInstallations { get; }
+    DbSet<MealPlanEntry> MealPlanEntries { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

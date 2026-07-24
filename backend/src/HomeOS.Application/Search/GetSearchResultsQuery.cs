@@ -68,6 +68,15 @@ public class GetSearchResultsQueryHandler(IAppDbContext db) : IRequestHandler<Ge
             results.AddRange(documents.Select(d => new SearchResultDto("life-admin", "document", d.Id, d.Title, "/life-admin")));
         }
 
+        if (searchableInstalledIds.Contains("meal-planner"))
+        {
+            var meals = await db.MealPlanEntries
+                .Where(m => m.HouseholdId == request.HouseholdId && m.Title.ToLower().Contains(needle))
+                .Take(10)
+                .ToListAsync(cancellationToken);
+            results.AddRange(meals.Select(m => new SearchResultDto("meal-planner", "meal", m.Id, m.Title, "/meal-planner")));
+        }
+
         return results;
     }
 }
