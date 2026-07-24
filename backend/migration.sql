@@ -645,5 +645,34 @@ BEGIN
     VALUES ('20260723133847_AddNotesFinanceLifeAdmin', '9.0.9');
     END IF;
 END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724053450_AddAppInstallations') THEN
+    CREATE TABLE "AppInstallations" (
+        "Id" uuid NOT NULL,
+        "HouseholdId" uuid NOT NULL,
+        "AppId" character varying(100) NOT NULL,
+        "GrantedPermissions" text[] NOT NULL,
+        "InstalledAtUtc" timestamp with time zone NOT NULL,
+        CONSTRAINT "PK_AppInstallations" PRIMARY KEY ("Id")
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724053450_AddAppInstallations') THEN
+    CREATE UNIQUE INDEX "IX_AppInstallations_HouseholdId_AppId" ON "AppInstallations" ("HouseholdId", "AppId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724053450_AddAppInstallations') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260724053450_AddAppInstallations', '9.0.9');
+    END IF;
+END $EF$;
 COMMIT;
 

@@ -1,4 +1,5 @@
 using HomeOS.Application.Common;
+using HomeOS.Domain.Apps;
 using HomeOS.Domain.Boards;
 using HomeOS.Domain.Calendar;
 using HomeOS.Domain.Common;
@@ -34,6 +35,7 @@ public class HomeOsDbContext(DbContextOptions<HomeOsDbContext> options, IPublish
     public DbSet<HouseholdDocument> Documents => Set<HouseholdDocument>();
     public DbSet<Contact> Contacts => Set<Contact>();
     public DbSet<ShoppingItem> ShoppingItems => Set<ShoppingItem>();
+    public DbSet<AppInstallation> AppInstallations => Set<AppInstallation>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -171,6 +173,13 @@ public class HomeOsDbContext(DbContextOptions<HomeOsDbContext> options, IPublish
             entity.ToTable("ShoppingItems");
             entity.Property(s => s.Text).HasMaxLength(300).IsRequired();
             entity.HasIndex(s => s.HouseholdId);
+        });
+
+        builder.Entity<AppInstallation>(entity =>
+        {
+            entity.ToTable("AppInstallations");
+            entity.Property(a => a.AppId).HasMaxLength(100).IsRequired();
+            entity.HasIndex(a => new { a.HouseholdId, a.AppId }).IsUnique();
         });
     }
 

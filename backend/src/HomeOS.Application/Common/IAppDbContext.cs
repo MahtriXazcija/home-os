@@ -1,3 +1,4 @@
+using HomeOS.Domain.Apps;
 using HomeOS.Domain.Boards;
 using HomeOS.Domain.Calendar;
 using HomeOS.Domain.Finance;
@@ -31,6 +32,7 @@ public interface IAppDbContext
     DbSet<HouseholdDocument> Documents { get; }
     DbSet<Contact> Contacts { get; }
     DbSet<ShoppingItem> ShoppingItems { get; }
+    DbSet<AppInstallation> AppInstallations { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }
