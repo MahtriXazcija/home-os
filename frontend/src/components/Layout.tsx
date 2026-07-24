@@ -11,6 +11,7 @@ import InviteMemberModal from "./InviteMemberModal";
 import MembersModal from "./MembersModal";
 import Icon, { type IconName } from "./Icon";
 import HomeOSLogo from "./HomeOSLogo";
+import PageAssistant from "./PageAssistant";
 
 const SIDEBAR_COLLAPSED_KEY = "homeos.sidebarCollapsed";
 
@@ -159,6 +160,7 @@ export default function Layout() {
           onClose={() => setMembersOpen(false)}
         />
       )}
+      <PageAssistant />
     </div>
   );
 }

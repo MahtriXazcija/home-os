@@ -5,6 +5,7 @@ using HomeOS.Application.Common;
 using HomeOS.Application.Households;
 using HomeOS.Application.Households.Commands;
 using HomeOS.Application.Notifications;
+using HomeOS.Infrastructure.Ai;
 using HomeOS.Infrastructure.Email;
 using HomeOS.Infrastructure.Identity;
 using HomeOS.Infrastructure.Persistence;
@@ -75,6 +76,12 @@ if (!string.IsNullOrWhiteSpace(connectionString))
     // environments (e.g. local dev against http://localhost:5173).
     builder.Services.Configure<FrontendOptions>(builder.Configuration.GetSection(FrontendOptions.SectionName));
     builder.Services.AddScoped<IFrontendLinkBuilder, FrontendLinkBuilder>();
+
+    // Page assistant — set "Anthropic:ApiKey" (env var Anthropic__ApiKey) to
+    // enable it. Without a key it just returns a "not configured yet" reply
+    // instead of failing the request.
+    builder.Services.Configure<AnthropicOptions>(builder.Configuration.GetSection(AnthropicOptions.SectionName));
+    builder.Services.AddHttpClient<IAiAssistantClient, AnthropicAiAssistantClient>();
 
     builder.Services.AddHostedService<ReminderSchedulerService>();
 
