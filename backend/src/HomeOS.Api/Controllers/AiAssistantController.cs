@@ -40,4 +40,12 @@ public class AiAssistantController(IAiAssistantClient client) : ControllerBase
         var reply = await client.AskAsync(systemPrompt, history, request.Message, ct);
         return Ok(new AskAssistantResponse(reply));
     }
+
+    /// <summary>Temporary diagnostic: reports exactly what Anthropic said, since app logs aren't reachable from outside Render.</summary>
+    [HttpPost("diagnose")]
+    public async Task<IActionResult> Diagnose(CancellationToken ct)
+    {
+        var result = await client.DiagnoseAsync(ct);
+        return Ok(new { result.Success, result.StatusCode, result.Body });
+    }
 }

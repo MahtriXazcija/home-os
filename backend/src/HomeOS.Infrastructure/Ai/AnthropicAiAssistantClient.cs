@@ -69,4 +69,35 @@ public class AnthropicAiAssistantClient(HttpClient httpClient, IOptions<Anthropi
             return "Sorry, something went wrong reading the AI response.";
         }
     }
+
+    public async Task<AiDiagnosticResult> DiagnoseAsync(CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(_options.ApiKey))
+        {
+            return new AiDiagnosticResult(false, 0, "No Anthropic:ApiKey configured.");
+        }
+
+        var payload = new
+        {
+            model = _options.Model,
+            max_tokens = 16,
+            messages = new[] { new { role = "user", content = "Say hello in exactly 3 words." } }
+        };
+
+        using var request = new HttpRequestMessage(HttpMethod.Post, "https://api.anthropic.com/v1/messages");
+        request.Headers.TryAddWithoutValidation("x-api-key", _options.ApiKey);
+        request.Headers.TryAddWithoutValidation("anthropic-version", "2023-06-01");
+        request.Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
+
+        try
+        {
+            var response = await httpClient.SendAsync(request, cancellationToken);
+            var body = await response.Content.ReadAsStringAsync(cancellationToken);
+            return new AiDiagnosticResult(response.IsSuccessStatusCode, (int)response.StatusCode, body);
+        }
+        catch (Exception ex)
+        {
+            return new AiDiagnosticResult(false, -1, ex.ToString());
+        }
+    }
 }
